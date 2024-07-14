@@ -1,0 +1,160 @@
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="d-flex">
+        <div class="input-group input-group-sm">
+          <input type="text" class="form-control" placeholder="Name, Phone..."
+            [(ngModel)]="searchText">
+          <div class="input-group-append">
+            <button class="btn btn-secondary" type="button">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="ml-auto d-flex">
+        <button type="button" class="btn btn-outline-success"
+          (click)="openAddCustomerModal()">+ Thêm khách hàng</button>
+        <div class="btn-group ml-2">
+          <button type="button" class="btn btn-success">File</button>
+          <button type="button" class="btn btn-success dropdown-toggle"
+            data-toggle="dropdown" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu" role="menu" style>
+            <a class="dropdown-item" href="#" (click)="importFile()">Import</a>
+            <a class="dropdown-item" href="#" (click)="exportFile()">Xuất</a>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button"
+              id="dropdownMenuButton" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Hiển thị
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <label class="dropdown-item">
+                <input type="checkbox" (change)="toggleDisplay('id')"
+                  [checked]="displayColumns.id" /> ID
+              </label>
+              <label class="dropdown-item">
+                <input type="checkbox" (change)="toggleDisplay('name')"
+                  [checked]="displayColumns.name" /> Tên
+              </label>
+              <label class="dropdown-item">
+                <input type="checkbox" (change)="toggleDisplay('phone')"
+                  [checked]="displayColumns.phone" /> Số điện thoại
+              </label>
+              <label class="dropdown-item">
+                <input type="checkbox" (change)="toggleDisplay('currentDebt')"
+                  [checked]="displayColumns.currentDebt" /> Nợ hiện tại
+              </label>
+              <label class="dropdown-item">
+                <input type="checkbox" (change)="toggleDisplay('totalSales')"
+                  [checked]="displayColumns.totalSales" /> Tổng doanh thu
+              </label>
+              <label class="dropdown-item">
+                <input type="checkbox"
+                  (change)="toggleDisplay('totalSalesMinusReturns')"
+                  [checked]="displayColumns.totalSalesMinusReturns" /> Doanh thu
+                trừ hàng hoàn
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- /.card-header -->
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th style="width: 10px">#</th>
+            <th *ngIf="displayColumns.name">Tên khách hàng</th>
+            <th *ngIf="displayColumns.phone">Điện thoại</th>
+            <th *ngIf="displayColumns.currentDebt">Nợ hiện tại</th>
+            <th *ngIf="displayColumns.totalSales">Tổng bán</th>
+            <th *ngIf="displayColumns.totalSalesMinusReturns">Tổng bán trừ trả
+              hàng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of customers | filter:searchText"
+            (click)="selectCustomer(customer)">
+            <td>KH000{{ customer.id }}</td>
+            <td *ngIf="displayColumns.name">{{ customer.name }}</td>
+            <td *ngIf="displayColumns.phone">{{ customer.phone }}</td>
+            <td *ngIf="displayColumns.currentDebt">{{ customer.currentDebt
+              }}</td>
+            <td *ngIf="displayColumns.totalSales">{{ customer.totalSales }}</td>
+            <td *ngIf="displayColumns.totalSalesMinusReturns">{{
+              customer.totalSalesMinusReturns }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="selectedCustomer" class="customer-info-card">
+      <div class="customer-info-header">
+        <h5>Thông tin khách hàng</h5>
+      </div>
+      <div class="customer-info-body">
+        <div class="customer-info-row">
+          <div class="customer-info-img-col">
+            <img src="path/to/customer/image" class="customer-info-img"
+              alt="Customer Image">
+          </div>
+          <div class="customer-info-details-col">
+            <div class="customer-info-detail"><strong>Mã khách hàng:</strong> {{
+              selectedCustomer.id }}</div>
+            <div class="customer-info-detail"><strong>Tên khách:</strong> {{
+              selectedCustomer.name }}</div>
+            <div class="customer-info-detail"><strong>Ngày sinh:</strong> {{
+              selectedCustomer.birthdate }}</div>
+            <div class="customer-info-detail"><strong>Nhóm KH:</strong> {{
+              selectedCustomer.group }}</div>
+            <div class="customer-info-detail"><strong>Mã số thuế:</strong> {{
+              selectedCustomer.taxCode }}</div>
+            <div class="customer-info-detail"><strong>Email:</strong> {{
+              selectedCustomer.email }}</div>
+            <div class="customer-info-detail"><strong>Facebook:</strong> {{
+              selectedCustomer.facebook }}</div>
+            <div class="customer-info-detail"><strong>Điện thoại:</strong> {{
+              selectedCustomer.phone }}</div>
+            <div class="customer-info-detail"><strong>Địa chỉ:</strong> {{
+              selectedCustomer.address }}</div>
+            <div class="customer-info-detail"><strong>Khu vực giao
+                hàng:</strong> {{ selectedCustomer.city }}</div>
+            <div class="customer-info-detail"><strong>Phường/xã:</strong> {{
+              selectedCustomer.ward }}</div>
+            <div class="customer-info-detail"><strong>Người tạo:</strong> {{
+              selectedCustomer.createdBy }}</div>
+            <div class="customer-info-detail"><strong>Ngày tạo:</strong> {{
+              selectedCustomer.createdDate }}</div>
+            <div class="customer-info-detail"><strong>Ghi chú:</strong> {{
+              selectedCustomer.notes }}</div>
+          </div>
+        </div>
+        <div class="customer-info-actions-row">
+          <button class="customer-info-btn customer-info-btn-update"
+            (click)="openUpdateCustomerModal(selectedCustomer.id)">Cập
+            nhật</button>
+          <button class="customer-info-btn customer-info-btn-deactivate">Ngừng
+            hoạt động</button>
+          <button class="customer-info-btn customer-info-btn-delete"
+            (click)="deleteCustomer()">Xóa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+      <ul class="pagination pagination-sm m-0 float-right">
+        <li class="page-item"><a class="page-link" href="#">«</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">»</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

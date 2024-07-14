@@ -1,0 +1,133 @@
+<div class="card card-success">
+  <div class="card-header">
+    <h3 class="card-title">Cập nhật thông tin khách hàng</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    <form (ngSubmit)="updatePartner()" [formGroup]="partnerForm">
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Tên khách hàng -->
+          <div class="form-group">
+            <label for="name">Tên khách hàng</label>
+            <input type="text" class="form-control" id="name"
+              formControlName="name"
+              [(ngModel)]="partner.name" required>
+            <div *ngIf="submitted && f['name'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['name'].errors?.['required']">Name is
+                required</div>
+              <div *ngIf="f['name'].errors?.['pattern']">Name chứa ký tự thường
+                và hoa, không có ký tự đặc biệt,số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Điện thoại -->
+          <div class="form-group">
+            <label for="phone">Điện thoại</label>
+            <input type="text" class="form-control" id="phone"
+              formControlName="phone"
+              [(ngModel)]="partner.phone" required>
+            <div *ngIf="submitted && f['phone'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['phone'].errors?.['required']">Điện thoại là bắt
+                buộc</div>
+              <div *ngIf="f['phone'].errors?.['pattern']">Điện thoại phải là 10
+                số và bắt đầu bằng 0 hoặc +84</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Địa chỉ -->
+          <div class="form-group">
+            <label for="address">Địa chỉ</label>
+            <input type="text" class="form-control" id="address"
+              formControlName="address"
+              [(ngModel)]="partner.address">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <!-- Khu vực -->
+          <div class="form-group">
+            <label for="city">Khu vực</label>
+            <input type="text" class="form-control" id="city"
+              formControlName="city"
+              [(ngModel)]="partner.region">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Phường xã -->
+          <div class="form-group">
+            <label for="ward">Phường xã</label>
+            <input type="text" class="form-control" id="ward"
+              formControlName="ward"
+              [(ngModel)]="partner.ward">
+          </div>
+        </div>
+        <div class="col-sm-6">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Mã số thuế -->
+          <div class="form-group">
+            <label for="taxCode">Mã số thuế</label>
+            <input type="text" class="form-control" id="taxCode"
+              formControlName="taxCode"
+              [(ngModel)]="partner.taxCode">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email"
+              formControlName="email"
+              [(ngModel)]="partner.email">
+            <div *ngIf="submitted && f['email'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['email'].errors?.['required']">Email is
+                required</div>
+              <div *ngIf="f['email'].errors?.['pattern']">Example
+                email@gmail.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <!-- Nhóm -->
+          <div class="form-group">
+            <label for="group">Nhóm</label>
+            <input type="text" class="form-control" id="group"
+              formControlName="group"
+              [(ngModel)]="partner.supplierGroup">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <!-- Ghi chú -->
+          <div class="form-group">
+            <label for="notes">Ghi chú</label>
+            <textarea class="form-control" id="notes" formControlName="notes"
+              [(ngModel)]="partner.note"></textarea>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success ml-2">
+        <i class="fas fa-address-card"></i> Cập nhật
+      </button>
+      <button type="button" class="btn btn-secondary ml-2"
+        (click)="close()"><i class="fas fa-ban"></i> Đóng</button>
+    </form>
+  </div>
+  <!-- /.card-body -->
+</div>

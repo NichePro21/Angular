@@ -1,0 +1,53 @@
+
+.address-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* Khoảng cách giữa các thẻ */
+  justify-content: left; /* Canh đều các thẻ */
+}
+
+.address-card {
+  width: 18rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng cho thẻ */
+  border-radius: 8px; /* Bo tròn các góc */
+  overflow: hidden; /* Ẩn phần dư thừa */
+  transition: transform 0.3s ease; /* Hiệu ứng khi hover */
+  border: 2px solid rgb(141, 82, 82);
+}
+
+.address-card:hover {
+  transform: translateY(-5px); /* Thẻ nổi lên khi hover */
+}
+
+.address-card-body {
+  padding: 1rem;
+}
+
+.address-card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.address-card-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  background-color: #59605b;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}

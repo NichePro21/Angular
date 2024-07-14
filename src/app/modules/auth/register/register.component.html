@@ -1,0 +1,123 @@
+
+<body class="hold-transition register-page">
+  <div class="register-box">
+    <div class="card card-outline card-primary">
+      <div class="card-header text-center">
+        <a href="#" class="h1"><b>Admin</b>LTE</a>
+      </div>
+      <div class="card-body">
+        <p class="login-box-msg">Register a new membership</p>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="First name"
+              formControlName="firstname">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['firstname'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['firstname'].errors?.['required']">First name is
+                required</div>
+            </div>
+          </div>
+
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Last name"
+              formControlName="lastname">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['lastname'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['lastname'].errors?.['required']">Last name is
+                required</div>
+            </div>
+          </div>
+
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email"
+              formControlName="email">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['email'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['email'].errors?.['required']">Email is
+                required</div>
+              <div *ngIf="f['email'].errors?.['email']">Email must be
+                valid</div>
+            </div>
+          </div>
+
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Password"
+              formControlName="password">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['password'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['password'].errors?.['required']">Password is
+                required</div>
+              <div *ngIf="f['password'].errors?.['minlength']">Password must be
+                at least 6 characters</div>
+            </div>
+          </div>
+
+          <div class="input-group mb-3">
+            <input type="password" class="form-control"
+              placeholder="Confirm Password" formControlName="retypePassword">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+            <div *ngIf="submitted && f['retypePassword'].errors"
+              class="invalid-feedback d-block">
+              <div *ngIf="f['retypePassword'].errors?.['required']">Password
+                confirmation is required</div>
+              <div *ngIf="f['retypePassword'].errors?.['notSame']">Passwords
+                must match!</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <div class="icheck-primary">
+                <input type="checkbox" id="agreeTerms" formControlName="terms"
+                  value="agree">
+                <label for="agreeTerms">
+                  I agree to the <a href="#">terms</a>
+                </label>
+              </div>
+            </div>
+            <div class="col-4">
+              <button type="submit"
+                class="btn btn-primary btn-block">Register</button>
+            </div>
+          </div>
+          <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+            {{ errorMessage }}
+          </div>
+        </form>
+
+        <div class="social-auth-links text-center">
+          <a href="#" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i>
+            Sign up using Google+
+          </a>
+        </div>
+        <a href="/login" class="text-center">I already have a membership</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- /.register-box -->
+</body>
