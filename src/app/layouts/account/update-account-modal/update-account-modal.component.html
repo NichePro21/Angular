@@ -1,0 +1,66 @@
+<div class="modal-header">
+  <h5 class="modal-title">Cập nhật tài khoản</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="updateAccountForm">
+    <div class="form-group">
+      <label for="firstname">Họ</label>
+      <input type="text" id="firstname" class="form-control"
+        formControlName="firstname">
+      <div
+        *ngIf="updateAccountForm.get('firstname')!.invalid && updateAccountForm.get('firstname')!.touched"
+        class="text-danger">
+        Họ không được để trống
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lastname">Tên</label>
+      <input type="text" id="lastname" class="form-control"
+        formControlName="lastname">
+      <div
+        *ngIf="updateAccountForm.get('lastname')!.invalid && updateAccountForm.get('lastname')!.touched"
+        class="text-danger">
+        Tên không được để trống
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="phone">Số điện thoại</label>
+      <input type="text" id="phone" class="form-control"
+        formControlName="phone">
+      <div
+        *ngIf="updateAccountForm.get('phone')!.invalid && updateAccountForm.get('phone')!.touched"
+        class="text-danger">
+        Số điện thoại không hợp lệ
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" class="form-control"
+        formControlName="email">
+      <div
+        *ngIf="updateAccountForm.get('email')!.invalid && updateAccountForm.get('email')!.touched"
+        class="text-danger">
+        Email không hợp lệ
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Mật khẩu</label>
+      <input type="password" id="password" class="form-control"
+        formControlName="password">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Xác nhận mật khẩu</label>
+      <input type="password" id="confirmPassword" class="form-control"
+        formControlName="confirmPassword">
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal"
+    (click)="closeModal()">Đóng</button>
+  <button type="button" class="btn btn-primary" (click)="updateAccount()">Cập
+    nhật tài khoản</button>
+</div>

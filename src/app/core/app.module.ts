@@ -32,6 +32,9 @@ import { PartnersComponent } from '../layouts/partners/partners.component';
 import { AddPartnerModalComponent } from '../layouts/partners/add-partner-modal/add-partner-modal.component';
 import { UpdatePartnerModalComponent } from '../layouts/partners/update-partner-modal/update-partner-modal.component';
 import { AccountComponent } from '../layouts/account/account.component';
+import { AddAccountModalComponent } from '../layouts/account/add-account-modal/add-account-modal.component';
+import { UpdateAccountModalComponent } from '../layouts/account/update-account-modal/update-account-modal.component';
+import { RoleSelectionModalComponent } from '../layouts/account/role-selection-modal/role-selection-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,6 +59,9 @@ import { AccountComponent } from '../layouts/account/account.component';
     AddPartnerModalComponent,
     UpdatePartnerModalComponent,
     AccountComponent,
+    AddAccountModalComponent,
+    UpdateAccountModalComponent,
+    RoleSelectionModalComponent,
   ],
   imports: [
     BrowserModule,

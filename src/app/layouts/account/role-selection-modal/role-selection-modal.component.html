@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <h4 class="modal-title">Chọn vai trò</h4>
+  <button type="button" class="close" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div *ngFor="let role of allRoles">
+    <input type="checkbox" [checked]="isRoleSelected(role)"
+      (change)="toggleRoleSelection(role)">
+    {{role.nameRoles}}
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary"
+    (click)="close()">Hủy</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Lưu</button>
+</div>

@@ -1,0 +1,139 @@
+.account-info-card {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e3e6f0;
+}
+
+.account-info-header {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #4e73df;
+  border-bottom: 2px solid #e3e6f0;
+  padding-bottom: 10px;
+}
+
+.account-info-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-info-detail {
+  margin-bottom: 15px;
+  font-size: 1em;
+  color: #5a5c69;
+  line-height: 1.5;
+}
+
+.account-info-detail strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.account-info-detail ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-info-detail ul li {
+  background-color: #f8f9fc;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  color: #5a5c69;
+}
+
+@media (max-width: 768px) {
+  .account-info-card {
+    padding: 15px;
+  }
+
+  .account-info-header {
+    font-size: 1.25em;
+  }
+
+  .account-info-detail {
+    font-size: 0.9em;
+  }
+}
+
+
+.table {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #343a40;
+  color: white;
+}
+
+.table thead th {
+  border: none;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.btn-outline-primary {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-outline-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+}
+
+.pagination .page-item .page-link {
+  color: #007bff;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.input-group .form-control {
+  border-radius: 4px 0 0 4px;
+}
+
+.input-group .input-group-append .btn {
+  border-radius: 0 4px 4px 0;
+}

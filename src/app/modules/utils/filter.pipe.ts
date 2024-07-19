@@ -17,7 +17,9 @@ export class FilterPipe implements PipeTransform {
       const id = it.phone ? String(it.phone).toLowerCase() : '';
       const email = it.email ? String(it.email).toLowerCase() : '';
       const name = it.name ? it.name.toLowerCase() : '';
-      return name.includes(searchText) || id.includes(searchText) || email.includes(searchText);
+      const firstname = it.firstname ? it.firstname.toLowerCase() : '';
+      const lastname = it.lastname ? it.lastname.toLowerCase() : '';
+      return name.includes(searchText) || id.includes(searchText) || email.includes(searchText) || firstname.includes(searchText) || lastname.includes(searchText);
     });
   }
 }
