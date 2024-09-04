@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.14.
 
+Github API FOR PROJECT
+```bash
+  https://github.com/NichePro21/Api
+```
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
@@ -24,3 +28,4 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 ## Meta
 Dự án này là một hệ thống quản lý cửa hàng bán lẻ toàn diện, bao gồm các chức năng quản lý sản phẩm, khách hàng, đơn hàng, và báo cáo doanh thu. Backend được xây dựng bằng Java Spring để cung cấp các API RESTful cho việc quản lý dữ liệu và logic kinh doanh, trong khi frontend được phát triển bằng Angular để tạo giao diện người dùng thân thiện và hiệu quả.
+## 
