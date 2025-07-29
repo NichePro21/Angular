@@ -1,7 +1,13 @@
-# ProjectNew
+# Store System Management
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.14.
+This project used version Angular 16.2.14.
+Main Functions
+Role management, Product management, Revenue management, Employee management, Customer management, Promotions, Checkout...
 
+Github API FOR PROJECT
+```bash
+  https://github.com/NichePro21/Api
+```
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
@@ -22,6 +28,8 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+## Meta
+This project is a comprehensive retail store management system, including functionalities for managing products, customers, orders, and revenue reporting. The backend is built using Java Spring to provide RESTful APIs for data management and business logic, while the frontend is developed with Angular to create a user-friendly and efficient interface.
+## 
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
