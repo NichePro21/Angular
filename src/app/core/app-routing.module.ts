@@ -12,6 +12,7 @@ import { ProfileComponent } from '../layouts/profile/profile.component';
 import { CustomerComponent } from '../layouts/customer/customer.component';
 import { PartnersComponent } from '../layouts/partners/partners.component';
 import { AccountComponent } from '../layouts/account/account.component';
+import { ProductsComponent } from '../layouts/products/products.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -28,7 +29,7 @@ const routes: Routes = [
       { path: 'customers', component: CustomerComponent },
       { path: 'partners', component: PartnersComponent },
       { path: 'account', component: AccountComponent },
-
+      { path: 'products', component: ProductsComponent },
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirect to /login by default

@@ -55,12 +55,12 @@ export class AddAccountModalComponent implements OnInit {
         Swal.fire('Thêm tài khoản thành công!', '', 'success');
         this.activeModal.close('success');
       },
-      (error: { message: string; }) => {
-        console.log(error);
-        Swal.fire('Lỗi', 'Đã xảy ra lỗi khi thêm tài khoản: ' + error.message, 'error');
+      (error: any) => {
+        Swal.fire('Lỗi', error.message || 'Đã xảy ra lỗi khi thêm tài khoản.', 'error');
       }
     );
   }
+
   closeModal(): void {
     this.activeModal.close('close');
   }

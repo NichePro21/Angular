@@ -29,31 +29,34 @@ export class AccountComponent {
     this.accountService.getAccounts().subscribe(
       data => {
         this.accounts = data.data;
-        // console.log(this.accounts);
+        console.log(this.accounts);
       },
       error => {
         console.error('Error fetching accounts', error);
       }
     );
   }
-
+  checkData: any;
   selectAccount(account: any): void {
     this.selectedAccount = account;
-    // this.loadAccountRoles(account.id);
+    this.loadAccountRoles(account.id);
   }
 
   loadAccountRoles(accountId: number): void {
     this.accountService.getAccountRoles(accountId).subscribe(
-      data => {
-        this.selectedAccount.roles = data;
-        console.log(data);
+      response => {
+        const data = response.data;
+        if (data && Array.isArray(data.roles)) {
+          this.selectedAccount.roles = data.roles;
+        } else {
+          console.error('Invalid data format', response);
+        }
       },
       error => {
         console.error('Error fetching account roles', error);
       }
     );
   }
-
   openAddAccountModal(): void {
     const modalRef = this.modalService.open(AddAccountModalComponent, {
       backdrop: false, // Không cho phép đóng modal khi nhấn ra ngoài
@@ -129,9 +132,60 @@ export class AccountComponent {
             this.loadAccounts();
           },
           error => {
-            Swal.fire('Lỗi', 'Xóa tài khoản thất bại', 'error');
+            Swal.fire('Lỗi', error.message || 'Xóa tài khoản thất bại.', 'error');
           }
         );
+      }
+    });
+  }
+  hasAdminRole(account: any): boolean {
+    return account.roles && account.roles.some((role: Role) => role.name === 'ROLE_ADMIN');
+  }
+  //disable and enable
+  onToggleAccountStatus(account: any): void {
+    Swal.fire({
+      title: 'Bạn có chắc?',
+      text: `Bạn muốn ${account.isDisable ? 'kích hoạt' : 'đình chỉ'} cho tài khoản này?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, do it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (account.isDisable) {
+          this.accountService.enableAccount(account.id).subscribe(response => {
+            account.isDisable = false;
+            Swal.fire(
+              'Enabled!',
+              'Tài khoản đã được kích hoạt.',
+              'success'
+            );
+          }, error => {
+            console.error('Error enabling account', error);
+            Swal.fire(
+              'Error!',
+              'There was an error enabling the account.',
+              'error'
+            );
+          });
+        } else {
+          this.accountService.disableAccount(account.id).subscribe(response => {
+            account.isDisable = true;
+            Swal.fire(
+              'Disabled!',
+              'Tài khoản đã bị đình chỉ.',
+              'success'
+            );
+          }, error => {
+            console.error('Error disabling account', error);
+            Swal.fire(
+              'Error!',
+              'There was an error disabling the account.',
+              'error'
+            );
+          });
+        }
       }
     });
   }

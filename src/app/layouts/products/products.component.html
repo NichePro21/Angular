@@ -1,0 +1,220 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Hàng hóa</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item active">Products</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Loại hàng</span>
+            <button class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#filterType">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="card-body collapse show" id="filterType">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="type1">
+              <label class="form-check-label" for="type1">Hàng hóa</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="type2">
+              <label class="form-check-label" for="type2">Dịch vụ</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="type3">
+              <label class="form-check-label" for="type3">Combo - Đóng gói</label>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Nhóm hàng</span>
+            <button class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#filterGroup">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="card-body collapse show" id="filterGroup">
+            <input type="text" class="form-control form-control-sm mb-2" placeholder="Tìm kiếm nhóm hàng">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Tất cả</li>
+              <li class="list-group-item">Đồ bảo hộ lao động</li>
+              <li class="list-group-item">Thiết bị phòng tắm</li>
+              <li class="list-group-item">Vật liệu hoàn thiện</li>
+              <li class="list-group-item">Vật tư cầu đường</li>
+              <li class="list-group-item">Vật liệu thô</li>
+            </ul>
+          </div>
+        </div>
+
+        
+        <div class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Tồn kho</span>
+            <button class="btn btn-sm btn-link p-0" data-bs-toggle="collapse" data-bs-target="#filterStock">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="card-body collapse show" id="filterStock">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock1" checked>
+              <label class="form-check-label" for="stock1">Tất cả</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock2">
+              <label class="form-check-label" for="stock2">Dưới định mức tồn</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock3">
+              <label class="form-check-label" for="stock3">Vượt định mức tồn</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock4">
+              <label class="form-check-label" for="stock4">Còn hàng trong kho</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock5">
+              <label class="form-check-label" for="stock5">Hết hàng trong kho</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="stock" id="stock6">
+              <label class="form-check-label" for="stock6">Lựa chọn khác</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="card shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center w-100">
+            
+            <div class="flex-grow-1">
+              <h3 class="card-title mb-0 fw-bold">Sản phẩm hiện có</h3>
+            </div>
+
+            
+            <div class="d-flex align-items-center gap-2">
+              
+              <div class="btn-group">
+                <button type="button" class="btn btn-success fw-bold">Thêm mới</button>
+                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown" aria-expanded="false"></button>
+                <ul class="dropdown-menu">
+                  <li><button class="dropdown-item" (click)="openAddItemModal('product')">Thêm hàng hóa</button></li>
+                  <li><button class="dropdown-item" (click)="openAddItemModal('service')">Thêm dịch vụ</button></li>
+                  <li><button class="dropdown-item" (click)="openAddItemModal('combo')">Thêm combo / gói</button></li>
+                </ul>
+              </div>
+
+              
+              <app-add-item-modal *ngIf="isModalOpen" (close)="closeModal()"></app-add-item-modal>
+
+              
+              <button type="button" class="btn btn-outline-warning" (click)="openModalImport()">Nhập file</button>
+              <button type="button" class="btn btn-outline-danger" (click)="openModalExport()">Xuất file</button>
+            </div>
+          </div>
+
+
+
+
+          <div class="card-body">
+            <div *ngIf="products.length === 0">
+              <p class="text-muted">Không có sản phẩm nào để hiển thị.</p>
+            </div>
+
+            <table *ngIf="products.length > 0" class="table table-hover table-bordered align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Tên</th>
+                  <th>Giá</th>
+                  <th>Giá Vốn</th>
+                  <th>Mô Tả</th>
+                  <th>Thương Hiệu</th>
+                  <th>Danh Mục</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let product of products">
+                  
+                  <tr (click)="selectProductDetail(product)" class="cursor-pointer product-row"
+                    [class.table-active]="activeDetailProduct?.id === product.id">
+                    <td>{{ product.id }}</td>
+                    <td>
+                      <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="{{ product.name }}" width="30"
+                        class="rounded me-2">
+                      {{ product.name }}
+                    </td>
+                    <td>{{ product.price | currency }}</td>
+                    <td>{{ product.capitalPrice | currency }}</td>
+                    <td>{{ product.description || 'Không có mô tả' }}</td>
+                    <td>{{ product.brand.name }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <ng-container *ngIf="false">
+                      <td>{{ product.type }}</td>
+                    </ng-container>
+                  </tr>
+
+                  
+                  <tr *ngIf="activeDetailProduct?.id === product.id">
+                    <td colspan="7" class="bg-light">
+                      <div class="master-row p-4 rounded shadow-sm border">
+                        <div class="row position-relative">
+                          
+                          <div class="col-md-3 mb-3 mb-md-0">
+                            <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="{{ product.name }}"
+                              class="img-fluid rounded">
+                            <p *ngIf="!product.imageUrl" class="text-muted">Không có hình ảnh</p>
+                          </div>
+
+                          
+                          <div class="col-md-9">
+                            <h5 class="mb-3">{{ product.name }}</h5>
+                            <p><strong>ID:</strong> {{ product.id }}</p>
+                            <p><strong>Giá:</strong> {{ product.price | currency }}</p>
+                            <p><strong>Giá vốn:</strong> {{ product.capitalPrice | currency }}</p>
+                            <p><strong>Mô tả:</strong> {{ product.description || 'Không có mô tả' }}</p>
+                            <p><strong>Thương hiệu:</strong> {{ product.brand.name }}</p>
+                            <p><strong>Danh mục:</strong> {{ product.category.name }}</p>
+
+                            
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                              <button class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i> Sửa
+                              </button>
+                              <button class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Xóa
+                              </button>
+                              <button class="btn btn-secondary">
+                                <i class="fas fa-eye me-1"></i> Xem
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

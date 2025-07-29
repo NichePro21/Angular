@@ -1,0 +1,322 @@
+<div class="modal-header bg-success text-white">
+    <h5 class="modal-title">➕ Thêm hàng</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+    <!-- Tabs -->
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav nav-tabs mb-3">
+        <li [ngbNavItem]="1">
+            <a ngbNavLink>Thông tin</a>
+            <ng-template ngbNavContent>
+                <!-- 👇 NỘI DUNG FORM CỦA BẠN Ở ĐÂY -->
+                <form class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Mã hàng</label>
+                        <input class="form-control bg-light"
+                            [value]="nextProductId !== null ? nextProductId : 'Đang tải...'" placeholder="Tự động"
+                            disabled />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Giá vốn<i class="ml-1 fas fa-info-circle text-secondary"
+                                data-toggle="tooltip" data-placement="right" title="Giá nhập vào của sản phẩm"
+                                style="cursor: pointer;"></i></label>
+                        <input type="number" class="form-control" [(ngModel)]="capitalPrice" name="capitalPrice"
+                            required />
+                        <div class="text-danger" *ngIf="capitalPriceError">{{ capitalPriceError }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Mã vạch
+                            <i class="ml-1 fas fa-info-circle text-secondary" data-toggle="tooltip"
+                                data-placement="right" title="Mã vạch thường được tạo ra bởi nhà sản xuất"
+                                style="cursor: pointer;"></i>
+                        </label>
+                        <input type="text" class="form-control" [(ngModel)]="barcode" name="barcode" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Giá bán<i class="ml-1 fas fa-info-circle text-secondary"
+                                data-toggle="tooltip" data-placement="right" title="Giá niêm yết của sản phẩm"
+                                style="cursor: pointer;"></i></label>
+                        <input type="number" class="form-control" [(ngModel)]="productPrice" name="price" required />
+                        <div class="text-danger" *ngIf="priceError">{{ priceError }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tên hàng</label>
+                        <input type="text" class="form-control" [(ngModel)]="productName" name="productName" required
+                            placeholder="Tên sản phẩm" />
+                        <div class="text-danger" *ngIf="productNameError">{{ productNameError }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Tồn kho<i class="ml-1 fas fa-info-circle text-secondary"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Số lượng sản phẩm còn lại trong kho hàng"
+                                style="cursor: pointer;"></i></label>
+                        <input class="form-control" *ngIf="stock" name="stock" />
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <label class="form-label mr-2">Nhóm hàng</label>
+
+                        <div class="input-group">
+                            <select class="form-control" [(ngModel)]="selectedCateId" name="categories" required
+                                #categoriesSelect="ngModel">
+                                <option *ngFor="let cate of categories" [value]="cate.id">{{ cate.name }}</option>
+                            </select>
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-success" (click)="openAddCategoryModal()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-danger mt-1" *ngIf="categoriesSelect.invalid && categoriesSelect.touched">
+                            Vui lòng chọn nhóm hàng.
+                        </div>
+                    </div>
+                    <!-- Modal thêm nhóm hàng -->
+                    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
+                        aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Thêm nhóm hàng</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Đóng"
+                                        (click)="closeCategoriesModel()">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="text-danger">Tên nhóm</label>
+                                    <input [(ngModel)]="newCategoryName" class="form-control" name="newCategoryName"
+                                        placeholder="Tên nhóm hàng mới" />
+                                    <div *ngIf="categoryErrorMsg" class="text-danger mt-2">
+                                        {{ categoryErrorMsg }}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        (click)="closeCategoriesModel()">Huỷ</button>
+                                    <button type="button" class="btn btn-primary" (click)="addCategory()">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <label class="form-label">Trọng lượng<i class="ml-1 fas fa-info-circle text-secondary"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Sử dụng để tính trọng lượng khi giao hàng"
+                                style="cursor: pointer;"></i></label>
+                        <div class="input-group">
+                            <input class="form-control mr-2" placeholder="" />
+                            <select class="form-select">
+                                <option>mg</option>
+                                <option>g</option>
+                                <option>kg</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <label class="form-label">Thương hiệu</label>
+
+                        <div class="input-group mr-2">
+                            <select class="form-control" [(ngModel)]="selectedBrandId" name="brand" required
+                                #brandSelect="ngModel">
+                                <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+                            </select>
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-success" (click)="openAddBrandModal()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-danger mt-1" *ngIf="brandSelect.invalid && brandSelect.touched">
+                            Vui lòng chọn thương hiệu.
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="addBrandModal" tabindex="-1" role="dialog"
+                        aria-labelledby="addBrandModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addBrandModalLabel">Thêm thương hiệu mới</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Đóng"
+                                        (click)="closeBrandModel()">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <label class="text-danger">Tên thương hiệu</label>
+                                    <input [(ngModel)]="newBrandName" class="form-control" name="newBrandName"
+                                        placeholder="Tên thương hiệu mới" />
+
+                                    <!-- Hiển thị lỗi -->
+                                    <div *ngIf="brandErrorMsg" class="text-danger mt-2">
+                                        {{ brandErrorMsg }}
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        (click)="closeBrandModel()">Huỷ</button>
+                                    <button type="button" class="btn btn-primary" (click)="addBrand()">Thêm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-6">
+                        <label class="form-label">Kích thước<i class="ml-1 fas fa-info-circle text-secondary"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Tính kích thước của sản phẩm theo đơn vị cơ bản."
+                                style="cursor: pointer;"></i></label>
+                        <div class="input-group">
+                            <input class="form-control mr-2" placeholder="Rộng" />
+                            <input class="form-control mr-2" placeholder="Dài" />
+                            <select class="form-select">
+                                <option>mm</option>
+                                <option>cm</option>
+                                <option>m</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label class="fw-bold">Chọn màu sắc:</label>
+                    <div class="d-flex flex-wrap gap-2 mb-2 position-relative">
+                        <div *ngFor="let color of selectedColors" class="color-box selected" [title]="color.name"
+                            [ngStyle]="{ 'background-color': color.hexCode }">
+                            <span class="checkmark">✔</span>
+                            <span class="remove" (click)="removeColor(color)">×</span>
+                        </div>
+                        <div class="color-box add-box" (click)="openColorPicker = !openColorPicker"><span>+</span></div>
+                    </div>
+
+                    <!-- Modal chọn màu -->
+                    <div *ngIf="openColorPicker" class="color-modal">
+                        <div class="color-grid">
+                            <div *ngFor="let color of allColors" class="color-box"
+                                [ngClass]="{ 'selected': isSelected(color.id) }"
+                                [ngStyle]="{ 'background-color': color.hexCode }" (click)="toggleColor(color)">
+                                <span *ngIf="isSelected(color.id)" class="checkmark">✔</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <input type="color" class="add-Colors" (change)="addNewColor($event)" />
+                            <button class="btn btn-sm btn-secondary ml-2 m-auto"
+                                (click)="openColorPicker = false">Đóng</button>
+                        </div>
+                    </div>
+
+
+
+
+
+                </form>
+
+                <div class="mt-4">
+                    <label class="form-label">
+                        Hình ảnh
+                        <i class="ml-1 fas fa-info-circle text-secondary" data-toggle="tooltip" data-placement="right"
+                            title="Hình ảnh miêu tả của sản phẩm sẽ được hiển thị."
+                            style="cursor: pointer;"></i>
+                    </label>
+
+                    <div class="row">
+                        <div class="col-3 col-md-2 mb-2" *ngFor="let img of images; let i = index">
+                            <div class="position-relative border border-secondary rounded shadow-sm bg-white d-flex align-items-center justify-content-center"
+                                style="height: 100px; cursor: pointer;" (click)="selectImage(i)">
+                                <ng-container *ngIf="img.preview; else placeholder">
+                                    <img [src]="img.preview" alt="Preview" class="img-fluid w-100 h-100 rounded"
+                                        style="object-fit: cover;">
+                                </ng-container>
+
+                                <ng-template #placeholder>
+                                    <img src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
+                                        alt="Placeholder" class="img-fluid opacity-50 p-2"
+                                        style="max-height: 100px; object-fit: contain;">
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- input hidden cho mỗi ảnh -->
+                    <input type="file" class="d-none" #fileInput (change)="onImageChange($event, selectedImageIndex)"
+                        accept="image/*">
+                    <div class="text-danger" *ngIf="imageError">{{ imageError }}</div>
+
+                </div>
+
+
+
+                <div class="form-check form-switch mt-4">
+                    <input class="form-check-input" type="checkbox" id="directSale">
+                    <label class="form-check-label" for="directSale">Bán trực tiếp</label>
+                </div>
+            </ng-template>
+        </li>
+
+        <li [ngbNavItem]="2">
+            <a ngbNavLink>Mô tả chi tiết</a>
+            <ng-template ngbNavContent>
+                <div class="card border">
+                    <div class="card-body">
+                        <h6 class="font-weight-bold mb-3">Định mức tồn</h6>
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <label class="mr-2 mb-0">Ít nhất</label>
+                                <i class="fa fa-info-circle text-muted" title="Số lượng tồn kho tối thiểu."></i>
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="0" [(ngModel)]="minStock"
+                                    name="minStock" required>
+                            </div>
+                            <div class="col-auto">
+                                <label class="mr-2 mb-0">Nhiều nhất</label>
+                                <i class="fa fa-info-circle text-muted" title="Số lượng tồn kho tối đa."></i>
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="999" required
+                                    [(ngModel)]="maxStock" name="maxStock">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border mt-3">
+                    <div class="card-body">
+                        <h6 class="font-weight-bold mb-2">Mô tả</h6>
+                        <div class="text-danger" *ngIf="descriptionError">{{ descriptionError }}</div>
+                        <textarea class="form-control" rows="4" [(ngModel)]="description" name="description"
+                            placeholder="Nhập mô tả chi tiết..."></textarea>
+                    </div>
+                </div>
+
+                <div class="card border mt-3">
+                    <div class="card-body">
+                        <h6 class="font-weight-bold mb-2">Mẫu ghi chú (hóa đơn, đặt hàng)</h6>
+                        <textarea class="form-control" rows="3" [(ngModel)]="note" name="note"
+                            placeholder="Nhập ghi chú hiển thị trên hóa đơn hoặc đơn hàng..."></textarea>
+                    </div>
+                </div>
+            </ng-template>
+
+
+        </li>
+    </ul>
+
+    <div [ngbNavOutlet]="nav"></div>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-success" (click)="save()">Lưu</button>
+    <button class="btn btn-secondary" (click)="activeModal.dismiss()">Bỏ qua</button>
+</div>

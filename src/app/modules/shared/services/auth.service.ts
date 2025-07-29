@@ -10,20 +10,16 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 })
 export class AuthService {
   private baseApi = 'http://localhost:8001/api';
-  private signUp = 'http://localhost:8001/api/sign-up'; // Thay đổi URL này thành API của bạn
-  private loginApi = 'http://localhost:8001/api/login'; // Thay đổi URL này thành API của bạn
-  private forgotApi = 'http://localhost:8001/api/forgot-password'; // Thay đổi URL này thành API của bạn
+  private signUp = 'http://localhost:8001/api/sign-up';
+  private loginApi = 'http://localhost:8001/api/login';
+  private forgotApi = 'http://localhost:8001/api/forgot-password';
   private readonly getUserInfoApi = 'http://localhost:8001/api/v3/user-info';
   private readonly TOKEN_KEY = 'token';
-  // Thay đổi URL này thành API của bạn
   constructor(private jwtHelper: JwtHelperService, private http: HttpClient, private router: Router) { }
 
   register(user: any): Observable<any> {
     return this.http.post(`${this.signUp}`, user);
   }
-  // login(user: any): Observable<any> {
-  //   return this.http.post(`${this.loginApi}`, user);
-  // }
   login(emailOrUsername: string, password: string): Observable<any> {
     return this.http.post<LoginResponse>(`${this.loginApi}`, { emailOrUsername, password }).pipe(
       tap(response => {
@@ -50,8 +46,7 @@ export class AuthService {
 
   // Kiểm tra trạng thái đăng nhập
   isLoggedIn(): boolean {
-    // Kiểm tra token hoặc bất cứ thứ gì bạn dùng để xác thực
-    return !!localStorage.getItem('token'); // Ví dụ sử dụng localStorage
+    return !!localStorage.getItem('token');
   }
   //get user by token
   getUserInfoFromToken(): any {
@@ -63,7 +58,6 @@ export class AuthService {
     return null;
 
   }
-  // Example API call to get user info based on token
   getUserInfo(): Observable<any> {
     return this.http.get<any>(`${this.getUserInfoApi}`);
   }

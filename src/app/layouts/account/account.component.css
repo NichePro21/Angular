@@ -137,3 +137,22 @@
 .input-group .input-group-append .btn {
   border-radius: 0 4px 4px 0;
 }
+.custom-switch-off-success .custom-control-input:checked~.custom-control-label::before {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.custom-switch-on-danger .custom-control-input:not(:checked)~.custom-control-label::before {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.custom-switch-off-danger .custom-control-input:not(:checked)~.custom-control-label::before {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.custom-switch-on-success .custom-control-input:checked~.custom-control-label::before {
+  background-color: #28a745;
+  border-color: #28a745;
+}

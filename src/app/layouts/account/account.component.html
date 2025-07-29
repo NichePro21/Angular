@@ -28,6 +28,7 @@
             <th>Email</th>
             <th>Username</th>
             <th>Vai trò</th>
+            <th>Trạng thái</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -39,8 +40,34 @@
             <td>{{ account.phone }}</td>
             <td>{{ account.email }}</td>
             <td>{{ account.username }}</td>
-            <td>{{ account.roles[0].name }}</td>
-            <td>
+            <td *ngIf="account.roles && account.roles.length > 0">{{
+              account.roles[0].name }}</td>
+            <!-- <td>
+              <div class="custom-control custom-switch"
+                [ngClass]="account.isDisable ? 'custom-switch-off-danger custom-switch-on-success' : 'custom-switch-off-success custom-switch-on-danger'">
+                <input type="checkbox" class="custom-control-input"
+                  id="customSwitch{{account.id}}"
+                  [checked]="!account.isDisable"
+                  (change)="onToggleAccountStatus(account)">
+                <label class="custom-control-label"
+                  for="customSwitch{{account.id}}"></label>
+              </div>
+            </td> -->
+            <td *ngIf="!hasAdminRole(account); else noAdminRole">
+              <div class="custom-control custom-switch"
+                [ngClass]="account.isDisable ? 'custom-switch-off-danger custom-switch-on-success' : 'custom-switch-off-success custom-switch-on-danger'">
+                <input type="checkbox" class="custom-control-input"
+                  id="customSwitch{{account.id}}"
+                  [checked]="!account.isDisable"
+                  (change)="onToggleAccountStatus(account)">
+                <label class="custom-control-label"
+                  for="customSwitch{{account.id}}"></label>
+              </div>
+            </td>
+            <ng-template #noAdminRole>
+              <td>Không được chỉnh sửa</td>
+            </ng-template>
+            <td *ngIf="!hasAdminRole(account); else noAdminRoles">
               <button type="button" class="btn btn-outline-primary btn-sm"
                 (click)="openEditAccountModal(account)">Sửa</button>
               <button type="button" class="btn btn-outline-danger btn-sm ml-2"
@@ -49,6 +76,9 @@
                 (click)="changeRoles(account)">Thay đổi vai
                 trò</button>
             </td>
+            <ng-template #noAdminRoles>
+              <td>Không được chỉnh sửa</td>
+            </ng-template>
           </tr>
         </tbody>
       </table>

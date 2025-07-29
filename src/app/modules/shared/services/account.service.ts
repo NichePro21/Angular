@@ -12,9 +12,17 @@ export class AccountService {
 
   constructor(private http: HttpClient) { }
 
-  private getHeaders() {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // Thay thế bằng token thực tế hoặc lấy từ localStorage/sessionStorage
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+  getAccountById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   getAccounts(): Observable<any> {
@@ -59,16 +67,35 @@ export class AccountService {
         catchError(this.handleError)
       );
   }
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unknown error occurred';
+  // disable and enable
+  enableAccount(accountId: number): Observable<any> {
+    const url = `${this.apiUrl}/${accountId}/enable`;
+    return this.http.put(url, {}, { headers: this.getHeaders() });
+  }
+
+  disableAccount(accountId: number): Observable<any> {
+    const url = `${this.apiUrl}/${accountId}/disable`;
+    return this.http.put(url, {}, { headers: this.getHeaders() });
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Đã xảy ra lỗi không xác định.';
+
     if (error.error instanceof ErrorEvent) {
-      // Client-side errors
-      errorMessage = `Error: ${error.error.message}`;
+      // Lỗi client-side hoặc lỗi mạng
+      errorMessage = `Lỗi: ${error.error.message}`;
     } else {
-      // Server-side errors
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      // Lỗi từ server
+      errorMessage = `Lỗi ${error.status}: ${error.message}`;
+      if (error.error && error.error.message) {
+        errorMessage = error.error.message;
+      }
     }
+
+    // Log lỗi cho việc kiểm tra
     console.error(errorMessage);
-    return throwError(errorMessage);
+
+    // Trả về Observable với lỗi
+    return throwError(() => new Error(errorMessage));
   }
 }

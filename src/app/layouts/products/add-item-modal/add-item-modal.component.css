@@ -1,0 +1,75 @@
+.color-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.color-box:hover {
+  border-color: #aaa;
+}
+
+.color-box.selected {
+  opacity: 0.6;
+  border-color: #000;
+}
+
+.color-box .checkmark {
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  top: 5px;
+  left: 8px;
+}
+
+.color-box .remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: white;
+  color: red;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.color-modal {
+  position: relative;
+  top: 100%; /* Dưới dấu "+" */
+  left: 0;
+  z-index: 999;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  white-space: nowrap;
+}
+
+
+.color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.add-Colors{
+    width:30px;
+    height:30px;
+}
+.add-box {
+  width: 30px;
+  height: 30px;
+  border: 2px dashed #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

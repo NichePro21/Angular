@@ -1,0 +1,60 @@
+
+
+.table tbody tr.selected {
+  background-color: #e9ecef;
+}
+
+/* Cải thiện giao diện chi tiết sản phẩm */
+.product-detail {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-detail .card-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.product-detail img {
+  max-width: 100%;
+  border-radius: 0.25rem;
+}
+
+.product-detail p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.btn-primary {
+  margin-left: 10px;
+}
+.btn{
+  margin-left: 10px;
+}
+.master-row {
+  background-color: #f9f9fb;
+  border-left: 4px solid #0d6efd;
+  border-radius: 12px;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.product-row {
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
