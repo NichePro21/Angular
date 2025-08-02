@@ -4,12 +4,12 @@
 </div>
 
 <div class="modal-body">
-    <!-- Tabs -->
+
     <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav nav-tabs mb-3">
         <li [ngbNavItem]="1">
             <a ngbNavLink>Thông tin</a>
             <ng-template ngbNavContent>
-                <!-- 👇 NỘI DUNG FORM CỦA BẠN Ở ĐÂY -->
+
                 <form class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Mã hàng</label>
@@ -75,7 +75,7 @@
                             Vui lòng chọn nhóm hàng.
                         </div>
                     </div>
-                    <!-- Modal thêm nhóm hàng -->
+
                     <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
                         aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -139,7 +139,7 @@
                             Vui lòng chọn thương hiệu.
                         </div>
                     </div>
-                    <!-- Modal -->
+
                     <div class="modal fade" id="addBrandModal" tabindex="-1" role="dialog"
                         aria-labelledby="addBrandModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -156,7 +156,7 @@
                                     <input [(ngModel)]="newBrandName" class="form-control" name="newBrandName"
                                         placeholder="Tên thương hiệu mới" />
 
-                                    <!-- Hiển thị lỗi -->
+
                                     <div *ngIf="brandErrorMsg" class="text-danger mt-2">
                                         {{ brandErrorMsg }}
                                     </div>
@@ -188,36 +188,116 @@
                             </select>
                         </div>
                     </div>
-                    <label class="fw-bold">Chọn màu sắc:</label>
-                    <div class="d-flex flex-wrap gap-2 mb-2 position-relative">
-                        <div *ngFor="let color of selectedColors" class="color-box selected" [title]="color.name"
-                            [ngStyle]="{ 'background-color': color.hexCode }">
-                            <span class="checkmark">✔</span>
-                            <span class="remove" (click)="removeColor(color)">×</span>
-                        </div>
-                        <div class="color-box add-box" (click)="openColorPicker = !openColorPicker"><span>+</span></div>
-                    </div>
+                    <div class="col-md-12 mt-3">
 
-                    <!-- Modal chọn màu -->
-                    <div *ngIf="openColorPicker" class="color-modal">
-                        <div class="color-grid">
-                            <div *ngFor="let color of allColors" class="color-box"
-                                [ngClass]="{ 'selected': isSelected(color.id) }"
-                                [ngStyle]="{ 'background-color': color.hexCode }" (click)="toggleColor(color)">
-                                <span *ngIf="isSelected(color.id)" class="checkmark">✔</span>
+                        <div class="card-header d-flex justify-content-between align-items-center bg-light px-3"
+                            style="cursor: pointer;" (click)="toggleAttributeSection()">
+                            <div><strong>Thuộc tính</strong></div>
+                            <div class="ml-auto">
+                                <i class="fa" [ngClass]="showAttributes ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                             </div>
                         </div>
 
-                        <div class="mt-2">
-                            <input type="color" class="add-Colors" (change)="addNewColor($event)" />
-                            <button class="btn btn-sm btn-secondary ml-2 m-auto"
-                                (click)="openColorPicker = false">Đóng</button>
+
+                        <div class="card-body border border-top-0" *ngIf="showAttributes">
+                            <div *ngFor="let attr of attributes; let i = index" class="form-row align-items-end mb-2">
+
+                                <div class="col-md-4">
+                                    <label>Chọn thuộc tính...</label>
+                                    <select class="form-control" [(ngModel)]="attr.name" name="attrName{{ i }}"
+                                        (change)="handleAttributeChange($event, i)">
+                                        <option [ngValue]="undefined" disabled selected>-- Chọn thuộc tính --</option>
+                                        <option *ngFor="let option of attributeOptions" [ngValue]="option.name">{{
+                                            option.name }}</option>
+                                        <option value="__create_new__">+ Tạo thuộc tính mới</option>
+                                    </select>
+                                </div>
+                                <div class="modal fade" id="createAttributeModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="createAttributeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Tạo thuộc tính mới</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    (click)="closeCreateAttributeModal()"><span>&times;</span></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="text" class="form-control" [(ngModel)]="newAttributeName"
+                                                    name="newAttrName" placeholder="Nhập tên thuộc tính mới">
+                                                <div *ngIf="attributeError" class="text-danger mt-1">{{ attributeError
+                                                    }}</div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                                    (click)="closeCreateAttributeModal()">Hủy</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    (click)="createNewAttribute()">Tạo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-control d-flex flex-wrap align-items-start p-2"
+                                        style="border-color: #ccc; border-radius: 6px; min-height: 30px; height: auto;">
+
+                                        <ng-container *ngFor="let value of attr.values; let j = index">
+                                            <span class="tag-badge d-flex align-items-center mr-2 mb-1">
+                                                {{ value.value }}
+                                                <button type="button" class="remove-btn ml-1"
+                                                    (click)="removeValue(i, j)">×</button>
+                                            </span>
+                                        </ng-container>
+
+                                        <span class="invisible-text">{{ attr.newValue }}</span>
+                                        <input type="text" class="tag-input border-0" [(ngModel)]="attr.newValue"
+                                            name="attrValue{{ i }}" placeholder="Enter Value"
+                                            (keydown.enter)="addValue($event, i)" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <button type="button" class="btn btn-link text-danger" (click)="removeAttribute(i)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary" (click)="addAttribute()">
+                                    <i class="fa fa-plus mr-1"></i> Thêm thuộc tính
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-
-
-
+                    <div *ngIf="generatedVariants.length > 0" class="col-md-12 mt-3">
+                        <h5>Danh sách hàng hóa cùng loại</h5>
+                        <table class="table table-bordered table-sm">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Mã hàng</th>
+                                    <th>Mã vạch</th>
+                                    <th>Giá vốn</th>
+                                    <th>Giá bán</th>
+                                    <th>Tồn kho</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let variant of generatedVariants; let i = index; trackBy: trackByVariant">
+                                    <td>
+                                        <span *ngFor="let av of variant.attributeValues" class="mr-1">
+                                            {{ av.attributeValue.value }}
+                                        </span>
+                                    </td>
+                                    <td><input class="form-control" [(ngModel)]="variant.sku" /></td>
+                                    <td><input class="form-control" [(ngModel)]="variant.barcode" /></td>
+                                    <td><input type="number" class="form-control" [(ngModel)]="variant.costPrice" />
+                                    </td>
+                                    <td><input type="number" class="form-control" [(ngModel)]="variant.salePrice" />
+                                    </td>
+                                    <td><input type="number" class="form-control" [(ngModel)]="variant.stock" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </form>
 
@@ -247,7 +327,7 @@
                         </div>
                     </div>
 
-                    <!-- input hidden cho mỗi ảnh -->
+
                     <input type="file" class="d-none" #fileInput (change)="onImageChange($event, selectedImageIndex)"
                         accept="image/*">
                     <div class="text-danger" *ngIf="imageError">{{ imageError }}</div>
@@ -307,15 +387,10 @@
                     </div>
                 </div>
             </ng-template>
-
-
         </li>
     </ul>
-
     <div [ngbNavOutlet]="nav"></div>
-
 </div>
-
 <div class="modal-footer">
     <button class="btn btn-success" (click)="save()">Lưu</button>
     <button class="btn btn-secondary" (click)="activeModal.dismiss()">Bỏ qua</button>

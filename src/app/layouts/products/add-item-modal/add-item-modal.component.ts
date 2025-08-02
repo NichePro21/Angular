@@ -1,9 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Color } from 'src/app/modules/shared/models/properties/color';
 import Swal from 'sweetalert2';
+import { ProductAttribute } from 'src/app/modules/shared/models/properties/product-attribute.model';
+import { AttributeValue } from 'src/app/modules/shared/models/properties/attribute-value.model';
+import { ProductVariant } from 'src/app/modules/shared/models/properties/product-variant.model';
 
 @Component({
   selector: 'app-add-item-modal',
@@ -29,7 +31,7 @@ export class AddItemModalComponent {
   maxStock: number = 0;
   description: string = '';
   note: string = ''; // <-- Khai báo biến này để sửa lỗi
-  constructor(public activeModal: NgbActiveModal, private http: HttpClient) { }
+  constructor(public activeModal: NgbActiveModal, private http: HttpClient, private cd: ChangeDetectorRef) { }
   close() {
     this.activeModal.dismiss();
   }
@@ -158,7 +160,8 @@ export class AddItemModalComponent {
     this.fetchBrands();
     this.featchCategories();
     this.getNextProductId();
-    this.loadColors();
+    this.fetchAttributeOptions();
+    this.inputWidths = this.attributes.map(() => 60); // Giá trị mặc định ban đầu
 
   }
   fetchBrands() {
@@ -182,7 +185,6 @@ export class AddItemModalComponent {
       }
     });
   }
-  //add brands
   openAddBrandModal() {
     ($('#addBrandModal') as any).modal('show');
   }
@@ -271,62 +273,230 @@ export class AddItemModalComponent {
       }
     });
   }
-  //colors
-  allColors: any[] = []; // Tất cả màu từ server
-  selectedColors: any[] = []; // Màu đã chọn
-  openColorPicker = false;
+  //attributes
+  attributes: ProductAttribute[] = [];
+  attributeOptions: ProductAttribute[] = [];
+  generatedVariants: any[] = [];
 
-  loadColors() {
-    this.http.get<any[]>('http://localhost:8001/api/colors').subscribe({
-      next: res => this.allColors = res,
-      error: err => console.error('Không thể load danh sách màu', err)
-    });
+  showAttributes = false;
+  newAttributeName = '';
+  attributeError = '';
+  inputWidths: number[] = [];
+  @ViewChildren('hiddenSpan') hiddenSpans!: QueryList<ElementRef>;
+
+
+
+  toggleAttributeSection() {
+    this.showAttributes = !this.showAttributes;
   }
 
-  isSelected(colorId: number): boolean {
-    return this.selectedColors.some(c => c.id === colorId);
-  }
-
-  toggleColor(color: any) {
-    const index = this.selectedColors.findIndex(c => c.id === color.id);
-    if (index > -1) {
-      this.selectedColors.splice(index, 1);
-    } else {
-      this.selectedColors.push(color);
-    }
-  }
-
-  removeColor(color: any) {
-    this.selectedColors = this.selectedColors.filter(c => c.id !== color.id);
-  }
-
-  async addNewColor(event: any) {
-    const hex = event.target.value;
-
-    const { value: name } = await Swal.fire({
-      title: "Nhập tên màu",
-      input: "text",
-      inputLabel: "Tên màu",
-      inputPlaceholder: "Ví dụ: Xanh biển",
-      inputValidator: (value) => {
-        if (!value) return "Tên màu không được để trống!";
-        return null;
+  // Lấy tất cả thuộc tính từ API
+  fetchAttributeOptions() {
+    this.http.get<ProductAttribute[]>('http://localhost:8001/api/attributes').subscribe({
+      next: (data) => {
+        this.attributeOptions = data;
       },
-    });
-
-    if (!name) return;
-
-    const newColor = { name, hexCode: hex };
-
-    this.http.post('http://localhost:8001/api/colors', newColor).subscribe({
-      next: (res: any) => {
-        this.allColors.push(res);
-        this.selectedColors.push(res);
-        this.openColorPicker = false;
-      },
-      error: () => {
-        Swal.fire("Lỗi", "Tên màu đã tồn tại hoặc có lỗi xảy ra!", "error");
+      error: (err) => {
+        console.error('Lỗi lấy thuộc tính:', err);
       }
     });
   }
+
+  // Thêm thuộc tính vào sản phẩm
+  addAttribute() {
+    this.attributes.push({
+      name: '',
+      values: [],
+      selectedValues: [],
+      newValue: ''
+    });
+  }
+
+  // Xóa thuộc tính
+  removeAttribute(index: number) {
+    this.attributes.splice(index, 1);
+  }
+
+  // Khi chọn thuộc tính từ dropdown
+  handleAttributeChange(event: any, index: number) {
+    const selectedName = event.target.value;
+
+    if (selectedName === '__create_new__') {
+      this.attributes[index].name = '';
+      this.openCreateAttributeModal();
+      return;
+    }
+
+    const found = this.attributeOptions.find(attr => attr.name === selectedName);
+    if (found) {
+      this.attributes[index].name = found.name;
+      this.attributes[index].values = found.values;
+      this.attributes[index].selectedValues = [];
+    }
+  }
+
+  // Thêm giá trị mới cho thuộc tính
+  // addValue(event: any, attrIndex: number) {
+  //   event.preventDefault();
+  //   const value = this.attributes[attrIndex].newValue?.trim();
+  //   if (!value) return;
+
+  //   const existed = this.attributes[attrIndex].values.some(v => v.value === value);
+  //   if (existed) return;
+
+  //   const newVal: AttributeValue = {
+  //     id: 0,
+  //     value,
+  //     attribute: { id: 0, name: this.attributes[attrIndex].name }
+  //   };
+
+
+  //   this.attributes[attrIndex].values.push(newVal);
+
+  //   if (!this.attributes[attrIndex].selectedValues) {
+  //     this.attributes[attrIndex].selectedValues = [];
+  //   }
+
+  //   const attr = this.attributes[attrIndex];
+  //   if (attr && attr.selectedValues) {
+  //     attr.selectedValues.push(newVal);
+  //   }
+  //   this.attributes[attrIndex].newValue = '';
+  //   this.generateVariantsFromAttributes();
+  // }
+  addValue(event: any, attrIndex: number) {
+    event.preventDefault();
+    const value = this.attributes[attrIndex].newValue?.trim();
+    if (!value) return;
+
+    const existed = this.attributes[attrIndex].values.some(v => v.value === value);
+    if (existed) return;
+
+    const attrName = this.attributes[attrIndex].name;
+    const matchedAttr = this.attributeOptions.find(opt => opt.name === attrName);
+
+    const newVal: AttributeValue = {
+      id: 0,
+      value,
+      attribute: {
+        id: matchedAttr?.id ?? 0,               // ép kiểu an toàn
+        name: matchedAttr?.name ?? attrName
+      }
+    };
+
+
+    this.attributes[attrIndex].values.push(newVal);
+
+    if (!this.attributes[attrIndex].selectedValues) {
+      this.attributes[attrIndex].selectedValues = [];
+    }
+
+    this.attributes[attrIndex].selectedValues?.push(newVal);
+    this.attributes[attrIndex].newValue = '';
+
+    this.generateVariantsFromAttributes();
+    this.cd.detectChanges(); // ← nếu cần bắt Angular render ngay
+  }
+
+
+
+
+  // Xóa giá trị đã chọn
+  removeValue(attrIndex: number, valueIndex: number) {
+    const attr = this.attributes[attrIndex];
+    if (!attr) return;
+
+    const removed = attr.values.splice(valueIndex, 1)[0];
+
+    if (attr.selectedValues) {
+      const indexInSelected = attr.selectedValues.findIndex(v => v.value === removed.value);
+      if (indexInSelected > -1) {
+        attr.selectedValues.splice(indexInSelected, 1);
+      }
+    }
+    this.generateVariantsFromAttributes();
+  }
+
+
+
+
+  // Mở modal tạo mới thuộc tính
+  openCreateAttributeModal() {
+    ($('#createAttributeModal') as any).modal('show');
+  }
+
+  closeCreateAttributeModal() {
+    ($('#createAttributeModal') as any).modal('hide');
+  }
+
+  // Tạo mới thuộc tính
+  createNewAttribute() {
+    const name = this.newAttributeName?.trim();
+
+    if (!name) {
+      this.attributeError = 'Không thể để trống';
+      return;
+    }
+
+    if (this.attributeOptions.some(attr => attr.name === name)) {
+      this.attributeError = 'Thuộc tính đã tồn tại';
+      return;
+    }
+
+    const newAttribute = { name };
+
+    this.http.post<ProductAttribute>('http://localhost:8001/api/attributes', newAttribute).subscribe({
+      next: (res) => {
+        this.attributeOptions.push({ ...res, values: [] });
+        this.closeCreateAttributeModal();
+        this.attributeError = '';
+        this.newAttributeName = '';
+      },
+      error: () => {
+        this.attributeError = 'Không thể tạo thuộc tính. Vui lòng thử lại.';
+      }
+    });
+  }
+
+  // Tự động cập nhật chiều rộng input khi gõ
+  updateInputWidth(index: number) {
+    const value = this.attributes[index].newValue || '';
+    const span = this.hiddenSpans.toArray()[index].nativeElement as HTMLSpanElement;
+    span.textContent = value;
+    const width = span.offsetWidth + 20;
+    this.inputWidths[index] = width;
+  }
+
+  // Sinh tổ hợp các biến thể
+  generateVariantsFromAttributes() {
+    const selectedAttrValues = this.attributes.map(attr => attr.selectedValues || []);
+    if (selectedAttrValues.some(values => values.length === 0)) {
+      this.generatedVariants = [];
+      return;
+    }
+
+    const combinations = this.cartesianProduct(selectedAttrValues);
+    this.generatedVariants = combinations.map((combo: AttributeValue[]) => {
+      return {
+        stock: 0,
+        sku: '',
+        barcode: '',
+        costPrice: 0,
+        salePrice: 0,
+        attributeValues: combo.map(av => ({ attributeValue: av }))
+      };
+    });
+  }
+
+  // Hàm sinh tổ hợp
+  cartesianProduct(arr: AttributeValue[][]): AttributeValue[][] {
+    return arr.reduce((a, b) =>
+      a.flatMap(d => b.map(e => [...d, e])),
+      [[]] as AttributeValue[][]
+    );
+  }
+  trackByVariant(index: number, variant: ProductVariant) {
+    return variant.sku ?? index;
+  }
+
 }

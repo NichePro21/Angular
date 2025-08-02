@@ -1,4 +1,4 @@
-export interface Size {
+export interface Attribute {
   id: number;
   name: string;
 }

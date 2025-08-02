@@ -1,9 +1,6 @@
-// product.model.ts
 import { Brand } from './brand';
 import { Category } from './category';
-import { Color } from './properties/color';
-import { Size } from './properties/size';
-import { Weight } from './properties/weight';
+import { ProductVariant } from './properties/product-variant.model';
 
 export interface Product {
   id: number;
@@ -15,10 +12,9 @@ export interface Product {
   type: string;
   brand: Brand;
   category: Category;
-  colors: Color[];
-  sizes: Size[];
-  weights: Weight[];
   stock: number;
   maxStock: number;
   minStock: number;
+  note?: string;
+  variants?: ProductVariant[]; 
 }
