@@ -1,17 +1,19 @@
-import { ProductVariant } from "../models/properties/product-variant.model";
+
+import { ProductVariantRequest } from "./att/ProductVariantRequest";
 
 
 export interface ProductRequest {
+  id?: number;
   name: string;
   price: number;
   capitalPrice: number;
   description?: string;
-  type: string;
-  brandId: number;
-  categoryId: number;
-  stock: number;
-  maxStock: number;
-  minStock: number;
+  type: 'PRODUCT';
+  brandId?: number;
+  categoryId?: number;
+  stock?: number;
+  maxStock?: number;
+  minStock?: number;
   note?: string;
-  variants?: ProductVariant[];
+  variants?: ProductVariantRequest[];
 }

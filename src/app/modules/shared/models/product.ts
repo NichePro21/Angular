@@ -1,10 +1,11 @@
 import { Brand } from './brand';
 import { Category } from './category';
-import { ProductVariant } from './properties/product-variant.model';
 
 export interface Product {
   id: number;
   name: string;
+  sku: string;
+  barcode: string;
   price: number;
   capitalPrice: number;
   description?: string;
@@ -16,5 +17,6 @@ export interface Product {
   maxStock: number;
   minStock: number;
   note?: string;
-  variants?: ProductVariant[]; 
+  variants: Product[];
+  // variants?: ProductVariant[]; 
 }

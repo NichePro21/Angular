@@ -40,7 +40,7 @@
           </div>
         </div>
 
-        
+
         <div class="card mb-3">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span>Nhóm hàng</span>
@@ -61,7 +61,7 @@
           </div>
         </div>
 
-        
+
         <div class="card mb-3">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span>Tồn kho</span>
@@ -100,14 +100,14 @@
       <div class="col-md-9">
         <div class="card shadow-sm">
           <div class="card-header d-flex justify-content-between align-items-center w-100">
-            
+
             <div class="flex-grow-1">
               <h3 class="card-title mb-0 fw-bold">Sản phẩm hiện có</h3>
             </div>
 
-            
+
             <div class="d-flex align-items-center gap-2">
-              
+
               <div class="btn-group">
                 <button type="button" class="btn btn-success fw-bold">Thêm mới</button>
                 <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split"
@@ -119,10 +119,10 @@
                 </ul>
               </div>
 
-              
+
               <app-add-item-modal *ngIf="isModalOpen" (close)="closeModal()"></app-add-item-modal>
 
-              
+
               <button type="button" class="btn btn-outline-warning" (click)="openModalImport()">Nhập file</button>
               <button type="button" class="btn btn-outline-danger" (click)="openModalExport()">Xuất file</button>
             </div>
@@ -135,8 +135,154 @@
             <div *ngIf="products.length === 0">
               <p class="text-muted">Không có sản phẩm nào để hiển thị.</p>
             </div>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên sản phẩm</th>
+                  <th>SKU</th>
+                  <th>Giá</th>
+                  <th>Kho</th>
+                  <th>Chi tiết biến thể</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let product of products; let i = index">
+                  <!-- Dòng sản phẩm cha -->
+                  <tr (click)="expandedIndex = expandedIndex === i ? -1 : i" style="cursor: pointer;">
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.sku }}</td>
+                    <td>{{ product.price | currency:'VND' }}</td>
+                    <td>{{ product.stock }}</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary">
+                        {{ expandedIndex === i ? 'Ẩn' : 'Xem' }}
+                      </button>
+                    </td>
+                  </tr>
 
-            <table *ngIf="products.length > 0" class="table table-hover table-bordered align-middle">
+                  <!-- Dòng variants con -->
+                  <tr *ngIf="expandedIndex === i">
+                    <td colspan="6" style="background-color: #f9f9f9;">
+                      <table class="table table-sm table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>ID Variant</th>
+                            <th>Tên biến thể</th>
+                            <th>SKU</th>
+                            <th>Giá</th>
+                            <th>Kho</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let variant of product.variants">
+                            <tr (click)="onSelectVariant(variant)" style="cursor: pointer;">
+                              <td>{{ variant.id }}</td>
+                              <td>{{ variant.name }}</td>
+                              <td>{{ variant.sku }}</td>
+                              <td>{{ variant.price | currency:'VND' }}</td>
+                              <td>{{ variant.stock }}</td>
+                            </tr>
+
+                            <!-- Dòng hiển thị chi tiết ngay dưới biến thể được chọn -->
+                            <tr *ngIf="selectedVariantId === variant.id">
+                              <td colspan="5" style="background-color: #eef6ff; padding: 1rem;">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                  <li class="nav-item">
+                                    <a class="nav-link active" id="tab-warehouse-{{variant.id}}" data-toggle="tab"
+                                      href="#warehouse-{{variant.id}}" role="tab"
+                                      aria-controls="warehouse-{{variant.id}}" aria-selected="true">Thẻ kho</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="tab-inventory-{{variant.id}}" data-toggle="tab"
+                                      href="#inventory-{{variant.id}}" role="tab"
+                                      aria-controls="inventory-{{variant.id}}" aria-selected="false">Tồn kho</a>
+                                  </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" id="tab-detail-{{variant.id}}" data-toggle="tab"
+                                      href="#detail-{{variant.id}}" role="tab" aria-controls="detail-{{variant.id}}"
+                                      aria-selected="false">Thông tin chi tiết</a>
+                                  </li>
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content mt-3">
+                                  <div class="tab-pane fade show active" id="warehouse-{{variant.id}}" role="tabpanel"
+                                    aria-labelledby="tab-warehouse-{{variant.id}}">
+                                    <table class="table table-bordered mb-0">
+                                      <tbody>
+                                        <tr>
+                                          <td>ID biến thể</td>
+                                          <td>{{ variant.id }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>SKU</td>
+                                          <td>{{ variant.sku }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Tên</td>
+                                          <td>{{ variant.name }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="tab-pane fade" id="inventory-{{variant.id}}" role="tabpanel"
+                                    aria-labelledby="tab-inventory-{{variant.id}}">
+                                    <table class="table table-bordered mb-0">
+                                      <tbody>
+                                        <tr>
+                                          <td>Tồn hiện tại</td>
+                                          <td>{{ variant.stock }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Tồn tối đa</td>
+                                          <td>{{ variant.maxStock }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Tồn tối thiểu</td>
+                                          <td>{{ variant.minStock }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="tab-pane fade" id="detail-{{variant.id}}" role="tabpanel"
+                                    aria-labelledby="tab-detail-{{variant.id}}">
+                                    <table class="table table-bordered mb-0">
+                                      <tbody>
+                                        <tr>
+                                          <td>Giá</td>
+                                          <td>{{ variant.price | currency:'VND' }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Mô tả</td>
+                                          <td>{{ variant.description }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Ghi chú</td>
+                                          <td>{{ variant.note }}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+
+
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+
+            </table>
+
+
+            <!-- <table *ngIf="products.length > 0" class="table table-hover table-bordered align-middle">
               <thead class="table-light">
                 <tr>
                   <th>ID</th>
@@ -150,7 +296,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let product of products">
-                  
+
                   <tr (click)="selectProductDetail(product)" class="cursor-pointer product-row"
                     [class.table-active]="activeDetailProduct?.id === product.id">
                     <td>{{ product.id }}</td>
@@ -169,19 +315,19 @@
                     </ng-container>
                   </tr>
 
-                  
+
                   <tr *ngIf="activeDetailProduct?.id === product.id">
                     <td colspan="7" class="bg-light">
                       <div class="master-row p-4 rounded shadow-sm border">
                         <div class="row position-relative">
-                          
+
                           <div class="col-md-3 mb-3 mb-md-0">
                             <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="{{ product.name }}"
                               class="img-fluid rounded">
                             <p *ngIf="!product.imageUrl" class="text-muted">Không có hình ảnh</p>
                           </div>
 
-                          
+
                           <div class="col-md-9">
                             <h5 class="mb-3">{{ product.name }}</h5>
                             <p><strong>ID:</strong> {{ product.id }}</p>
@@ -191,11 +337,12 @@
                             <p><strong>Thương hiệu:</strong> {{ product.brand.name }}</p>
                             <p><strong>Danh mục:</strong> {{ product.category.name }}</p>
 
-                            
+
                             <div class="d-flex justify-content-end gap-2 mt-4">
-                              <button class="btn btn-primary">
+                              <button class="btn btn-primary" (click)="openUpdateModal(product)">
                                 <i class="fas fa-edit me-1"></i> Sửa
                               </button>
+
                               <button class="btn btn-danger">
                                 <i class="fas fa-trash-alt me-1"></i> Xóa
                               </button>
@@ -211,7 +358,7 @@
                   </tr>
                 </ng-container>
               </tbody>
-            </table>
+            </table> -->
           </div>
         </div>
       </div>

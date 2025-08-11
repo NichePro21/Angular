@@ -37,6 +37,8 @@ import { UpdateAccountModalComponent } from '../layouts/account/update-account-m
 import { RoleSelectionModalComponent } from '../layouts/account/role-selection-modal/role-selection-modal.component';
 import { ProductsComponent } from '../layouts/products/products.component';
 import { AddItemModalComponent } from '../layouts/products/add-item-modal/add-item-modal.component';
+import { VariantTableComponent } from '../layouts/products/add-item-modal/variant-table/variant-table.component';
+import { UpdateItemModalComponent } from '../layouts/products/update-item-modal/update-item-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -65,7 +67,9 @@ import { AddItemModalComponent } from '../layouts/products/add-item-modal/add-it
     UpdateAccountModalComponent,
     RoleSelectionModalComponent,
     ProductsComponent,
-    AddItemModalComponent
+    AddItemModalComponent,
+    VariantTableComponent,
+    UpdateItemModalComponent,
   ],
   imports: [
     BrowserModule,

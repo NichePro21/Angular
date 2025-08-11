@@ -7,17 +7,25 @@
         <li [ngbNavItem]="1">
             <a ngbNavLink>Thông tin</a>
             <ng-template ngbNavContent>
+                <div *ngIf="loading" class="text-center">
+                    <div class="spinner-border" role="status"></div>
+                    <p>Đang tải...</p>
+                </div>
+                <div *ngIf="error" class="alert alert-danger">
+                    {{ error }}
+                </div>
                 <form class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Mã hàng</label>
-                        <input class="form-control bg-light"
-                            [value]="nextProductId !== null ? nextProductId : 'Đang tải...'" placeholder="Tự động"
-                            disabled />
+                        <input class="form-control bg-light" [value]="" placeholder="Tự động" disabled />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Giá vốn<i class="ml-1 fas fa-info-circle text-secondary"
-                                data-toggle="tooltip" data-placement="right" title="Giá nhập vào của sản phẩm"
-                                style="cursor: pointer;"></i></label>
+                        <label class="form-label">
+                            Giá vốn
+                            <i class="ml-1 fas fa-info-circle text-secondary" data-toggle="tooltip"
+                                data-placement="right" title="Giá nhập vào của sản phẩm" style="cursor: pointer;">
+                            </i>
+                        </label>
                         <input type="number" class="form-control" [(ngModel)]="capitalPrice" name="capitalPrice"
                             required />
                         <div class="text-danger" *ngIf="capitalPriceError">{{ capitalPriceError }}</div>
@@ -31,19 +39,21 @@
                         </label>
                         <input type="text" class="form-control" [(ngModel)]="barcode" name="barcode" />
                     </div>
-
                     <div class="col-md-6">
-                        <label class="form-label">Giá bán<i class="ml-1 fas fa-info-circle text-secondary"
-                                data-toggle="tooltip" data-placement="right" title="Giá niêm yết của sản phẩm"
-                                style="cursor: pointer;"></i></label>
-                        <input type="number" class="form-control" [(ngModel)]="productPrice" name="price" required />
+                        <label class="form-label">
+                            Giá bán
+                            <i class="ml-1 fas fa-info-circle text-secondary" data-toggle="tooltip"
+                                data-placement="right" title="Giá bán của sản phẩm" style="cursor: pointer;"></i>
+                        </label>
+                        <input type="number" class="form-control" [(ngModel)]="price" name="price" required />
                         <div class="text-danger" *ngIf="priceError">{{ priceError }}</div>
                     </div>
+
                     <div class="col-md-6">
                         <label class="form-label">Tên hàng</label>
-                        <input type="text" class="form-control" [(ngModel)]="productName" name="productName" required
+                        <input type="text" class="form-control" [(ngModel)]="name" name="name" required
                             placeholder="Tên sản phẩm" />
-                        <div class="text-danger" *ngIf="productNameError">{{ productNameError }}</div>
+                        <div class="text-danger" *ngIf="nameError">{{ nameError }}</div>
                     </div>
                     <!-- Trường tổng stock -->
                     <div class="col-md-6">
@@ -56,22 +66,20 @@
                     </div>
 
 
+                    <!-- Category -->
                     <div class="col-md-6 mt-2">
                         <label class="form-label mr-2">Nhóm hàng</label>
-
                         <div class="input-group">
                             <select class="form-control" [(ngModel)]="selectedCateId" name="categories" required
                                 #categoriesSelect="ngModel">
                                 <option *ngFor="let cate of categories" [value]="cate.id">{{ cate.name }}</option>
                             </select>
-
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-success" (click)="openAddCategoryModal()">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-
                         <div class="text-danger mt-1" *ngIf="categoriesSelect.invalid && categoriesSelect.touched">
                             Vui lòng chọn nhóm hàng.
                         </div>
@@ -120,11 +128,11 @@
                         </div>
                     </div>
                     <div class="col-md-6 mt-2">
-                        <label class="form-label">Thương hiệu</label>
+                        <label class="form-label mr-2">Thương hiệu</label>
 
-                        <div class="input-group mr-2">
-                            <select class="form-control" [(ngModel)]="selectedBrandId" name="brand" required
-                                #brandSelect="ngModel">
+                        <div class="input-group">
+                            <select class="form-control" [(ngModel)]="selectedBrandId" name="brands" required
+                                #brandsSelect="ngModel">
                                 <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
                             </select>
 
@@ -135,10 +143,11 @@
                             </div>
                         </div>
 
-                        <div class="text-danger mt-1" *ngIf="brandSelect.invalid && brandSelect.touched">
+                        <div class="text-danger mt-1" *ngIf="brandsSelect.invalid && brandsSelect.touched">
                             Vui lòng chọn thương hiệu.
                         </div>
                     </div>
+
 
                     <div class="modal fade" id="addBrandModal" tabindex="-1" role="dialog"
                         aria-labelledby="addBrandModalLabel" aria-hidden="true">
@@ -197,80 +206,57 @@
 
 
                         <div class="card-body border border-top-0" *ngIf="showAttributes">
-                            <div *ngFor="let attr of attributes; let i = index" class="form-row align-items-end mb-2">
+                            <div *ngFor="let attribute of attributes; let i = index"
+                                class="form-row align-items-end mb-2">
 
                                 <div class="col-md-4">
-                                    <label>Chọn thuộc tính...</label>
-                                    <select class="form-control" [(ngModel)]="attr.name" name="attrId{{ i }}"
+                                    <select class="form-control" [(ngModel)]="attribute.name" name="attrId{{ i }}"
                                         (change)="handleAttributeChange($event, i)">
                                         <option [ngValue]="undefined" disabled selected>-- Chọn thuộc tính --</option>
-                                        <option *ngFor="let attr of attributeOptions" [value]="attr.name">{{ attr.name
-                                            }}</option>
+                                        <option *ngFor="let option of attributeOptions" [value]="option.name">{{
+                                            option.name }}</option>
                                         <option [value]="'__create_new__'">+ Tạo thuộc tính mới</option>
                                     </select>
                                 </div>
-                                <div class="modal fade" id="createAttributeModal" tabindex="-1" role="dialog"
-                                    aria-labelledby="createAttributeModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Tạo thuộc tính mới</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    (click)="closeCreateAttributeModal()"><span>&times;</span></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <input type="text" class="form-control" [(ngModel)]="newAttributeName"
-                                                    name="newAttrName" placeholder="Nhập tên thuộc tính mới">
-                                                <div *ngIf="attributeError" class="text-danger mt-1">{{ attributeError
-                                                    }}</div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                                                    (click)="closeCreateAttributeModal()">Hủy</button>
-                                                <button type="button" class="btn btn-primary"
-                                                    (click)="createNewAttribute()">Tạo</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                <!-- Cột giá trị thuộc tính -->
                                 <div class="col-md-6">
                                     <div class="form-control d-flex flex-wrap align-items-start p-2"
                                         style="border-color: #ccc; border-radius: 6px; min-height: 30px; height: auto;">
 
-                                        <ng-container *ngFor="let value of attr.values; let j = index">
+                                        <ng-container *ngFor="let value of attribute.values; let j = index">
                                             <span class="tag-badge d-flex align-items-center mr-2 mb-1">
-                                                {{ value.value }}
+                                                {{ value }}
                                                 <button type="button" class="remove-btn ml-1"
                                                     (click)="removeValue(i, j)">×</button>
                                             </span>
                                         </ng-container>
 
-                                        <span class="invisible-text">{{ attr.newValue }}</span>
-                                        <input type="text" class="tag-input border-0" [(ngModel)]="attr.newValue"
-                                            name="attrValue{{ i }}" placeholder="Enter Value"
+                                        <span class="invisible-text">{{ attribute.newValue }}</span>
+                                        <input type="text" class="tag-input border-0" [(ngModel)]="attribute.newValue"
+                                            name="attrValue{{ i }}" placeholder="Nhập giá trị"
                                             (keydown.enter)="addValue($event, i)" />
                                     </div>
                                 </div>
+
+                                <!-- Xóa thuộc tính -->
                                 <div class="col-md-2 text-right">
                                     <button type="button" class="btn btn-link text-danger" (click)="removeAttribute(i)">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Nút thêm thuộc tính -->
                             <div>
                                 <button type="button" class="btn btn-outline-secondary" (click)="addAttribute()">
                                     <i class="fa fa-plus mr-1"></i> Thêm thuộc tính
                                 </button>
                             </div>
                         </div>
+
                     </div>
-                    <div *ngIf="generatedVariants.length > 0">
-                        <div *ngIf="generatedVariants.length > 0">
-                            <app-variant-table [variants]="generatedVariants"
-                                (variantsChange)="onVariantsChange($event)"
-                                (stockChange)="handleStockChange($event)"></app-variant-table>
-                        </div>
-                    </div>
+
                 </form>
 
                 <div class="mt-4">
@@ -364,6 +350,6 @@
     <div [ngbNavOutlet]="nav"></div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-success" (click)="save()">Lưu</button>
+    <button class="btn btn-success" (click)="updateProduct()">Lưu</button>
     <button class="btn btn-secondary" (click)="activeModal.dismiss()">Bỏ qua</button>
 </div>

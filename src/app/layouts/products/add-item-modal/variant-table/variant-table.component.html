@@ -1,0 +1,39 @@
+<div *ngIf="variants.length > 0" class="mt-4">
+    <h5>Danh sách hàng hóa cùng loại</h5>
+    <table class="table table-bordered table-sm">
+        <thead class="thead-light">
+            <tr>
+                <th>Tên</th>
+                <th>Mã hàng</th>
+                <th>Mã vạch</th>
+                <th>Giá vốn</th>
+                <th>Giá bán</th>
+                <th>Tồn kho</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let variant of variants; let i = index">
+                <td>{{ getVariantLabel(variant) }}</td>
+                <td>
+                    <input class="form-control" [(ngModel)]="variant.sku" (ngModelChange)="onVariantFieldChange()" />
+                </td>
+                <td>
+                    <input class="form-control" [(ngModel)]="variant.barcode"
+                        (ngModelChange)="onVariantFieldChange()" />
+                </td>
+                <td>
+                    <input type="number" class="form-control" [(ngModel)]="variant.costPrice"
+                        (ngModelChange)="onVariantFieldChange()" />
+                </td>
+                <td>
+                    <input type="number" class="form-control" [(ngModel)]="variant.salePrice"
+                        (ngModelChange)="onVariantFieldChange()" />
+                </td>
+                <td>
+                    <input type="number" class="form-control" [(ngModel)]="variant.stock"
+                        (ngModelChange)="onVariantFieldChange()" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { ProductAttribute } from 'src/app/modules/shared/models/properties/product-attribute.model';
 import { AttributeValue } from 'src/app/modules/shared/models/properties/attribute-value.model';
 import { ProductVariant } from 'src/app/modules/shared/models/properties/product-variant.model';
+import { VariantAttributeValue } from 'src/app/modules/shared/models/properties/variant-attribute-value.model';
+import { Attribute } from 'src/app/modules/shared/models/properties/attribute.model';
 
 @Component({
   selector: 'app-add-item-modal',
@@ -40,9 +42,14 @@ export class AddItemModalComponent {
   priceError = '';
   productNameError = '';
   descriptionError = '';
+  generatedVariants: ProductVariant[] = [];
+
+  onVariantsChange(updatedVariants: ProductVariant[]) {
+    this.generatedVariants = updatedVariants;
+  }
+
   save() {
-    // Kiểm tra bắt buộc
-    // Reset tất cả lỗi
+    // Reset lỗi
     this.imageError = '';
     this.capitalPriceError = '';
     this.priceError = '';
@@ -51,31 +58,27 @@ export class AddItemModalComponent {
 
     let isValid = true;
 
-    // Kiểm tra tên sản phẩm
+    // Kiểm tra các trường bắt buộc
     if (!this.productName || this.productName.trim() === '') {
       this.productNameError = 'Tên sản phẩm không được để trống';
       isValid = false;
     }
 
-    // Kiểm tra giá bán
     if (this.productPrice == null || this.productPrice <= 0) {
       this.priceError = 'Giá bán phải lớn hơn 0';
       isValid = false;
     }
 
-    // Kiểm tra giá vốn
     if (this.capitalPrice == null || this.capitalPrice < 0) {
       this.capitalPriceError = 'Giá vốn không được âm';
       isValid = false;
     }
 
-    // Kiểm tra mô tả
     if (!this.description || this.description.trim() === '') {
       this.descriptionError = 'Mô tả không được để trống';
       isValid = false;
     }
 
-    // Kiểm tra ảnh
     if (!this.images || !this.images.some(i => i.file)) {
       this.imageError = 'Vui lòng chọn ít nhất 1 hình ảnh';
       isValid = false;
@@ -83,48 +86,58 @@ export class AddItemModalComponent {
 
     if (!isValid) return;
 
+    // Chuyển đổi dữ liệu variants thành đúng định dạng cho API
+    const mappedVariants = this.generatedVariants.map(v => ({
+      price: v.salePrice,
 
+      capitalPrice: v.costPrice,
+      stock: v.stock,
+      attributeValues: v.attributeValues.map(av => ({
+        attributeName: av.attributeValue.attribute.name,
+        value: av.attributeValue.value
+      }))
+    }));
+    console.log('mappedVariants', mappedVariants);
+    console.log('generatedVariants', this.generatedVariants);
+    // Chuẩn bị dữ liệu sản phẩm
     const productRequest = {
       name: this.productName,
       price: this.productPrice,
       capitalPrice: this.capitalPrice,
-      barcode: this.barcode,
       stock: this.stock,
+      maxStock: this.maxStock,
+      minStock: this.minStock,
       description: this.description,
       note: this.note,
-      imageUrl: '', // server xử lý
       type: 'PRODUCT',
       brandId: this.selectedBrandId,
       categoryId: this.selectedCateId,
-      colorIds: [],
-      sizeIds: [],
-      weightIds: [],
-      minStock: this.minStock,
-      maxStock: this.maxStock
+      variants: mappedVariants
     };
 
-
+    // Đóng gói dữ liệu bằng FormData
     const formData = new FormData();
-
-    formData.append('product', JSON.stringify(productRequest));
-
-    this.images.forEach(image => {
-      if (image.file) {
-        formData.append('images', image.file); // Trùng key 'images' như API yêu cầu
-      }
+    formData.append('product', new Blob([JSON.stringify(productRequest)], { type: 'application/json' }));
+    this.images.forEach(img => {
+      if (img.file) formData.append('images', img.file);
     });
 
+    // Gửi API
     this.http.post('http://localhost:8001/api/products', formData).subscribe({
-      next: (res) => {
-        alert('✅ Thêm sản phẩm thành công!');
-        this.activeModal.close('success');
+      next: () => {
+        alert('Thêm sản phẩm thành công!');
+        this.activeModal.close();
       },
-      error: (err) => {
-        console.error('❌ Lỗi khi thêm sản phẩm:', err);
-        alert('❌ Có lỗi xảy ra khi thêm sản phẩm.');
+      error: err => {
+        console.error('Lỗi thêm sản phẩm:', err);
       }
     });
   }
+  //stock
+  handleStockChange(totalStock: number) {
+    this.stock = totalStock;
+  }
+
   // hinh anh 
   images: { file: File | null; preview: string | null }[] = Array(5).fill(null).map(() => ({
     file: null,
@@ -276,7 +289,6 @@ export class AddItemModalComponent {
   //attributes
   attributes: ProductAttribute[] = [];
   attributeOptions: ProductAttribute[] = [];
-  generatedVariants: any[] = [];
 
   showAttributes = false;
   newAttributeName = '';
@@ -315,6 +327,7 @@ export class AddItemModalComponent {
   // Xóa thuộc tính
   removeAttribute(index: number) {
     this.attributes.splice(index, 1);
+    this.generateVariantsFromAttributes();
   }
 
   // Khi chọn thuộc tính từ dropdown
@@ -329,45 +342,27 @@ export class AddItemModalComponent {
 
     const found = this.attributeOptions.find(attr => attr.name === selectedName);
     if (found) {
-      this.attributes[index].name = found.name;
+      this.attributes[index].attribute = {
+        name: found.name
+      } as Attribute; // ✅ đúng kiểu { name: string }
+
       this.attributes[index].values = found.values;
       this.attributes[index].selectedValues = [];
     }
   }
 
-  // Thêm giá trị mới cho thuộc tính
-  // addValue(event: any, attrIndex: number) {
-  //   event.preventDefault();
-  //   const value = this.attributes[attrIndex].newValue?.trim();
-  //   if (!value) return;
-
-  //   const existed = this.attributes[attrIndex].values.some(v => v.value === value);
-  //   if (existed) return;
-
-  //   const newVal: AttributeValue = {
-  //     id: 0,
-  //     value,
-  //     attribute: { id: 0, name: this.attributes[attrIndex].name }
-  //   };
 
 
-  //   this.attributes[attrIndex].values.push(newVal);
 
-  //   if (!this.attributes[attrIndex].selectedValues) {
-  //     this.attributes[attrIndex].selectedValues = [];
-  //   }
-
-  //   const attr = this.attributes[attrIndex];
-  //   if (attr && attr.selectedValues) {
-  //     attr.selectedValues.push(newVal);
-  //   }
-  //   this.attributes[attrIndex].newValue = '';
-  //   this.generateVariantsFromAttributes();
-  // }
   addValue(event: any, attrIndex: number) {
     event.preventDefault();
     const value = this.attributes[attrIndex].newValue?.trim();
     if (!value) return;
+
+    // 🔧 Nếu chưa có values thì khởi tạo mảng rỗng
+    if (!this.attributes[attrIndex].values) {
+      this.attributes[attrIndex].values = [];
+    }
 
     const existed = this.attributes[attrIndex].values.some(v => v.value === value);
     if (existed) return;
@@ -379,11 +374,10 @@ export class AddItemModalComponent {
       id: 0,
       value,
       attribute: {
-        id: matchedAttr?.id ?? 0,               // ép kiểu an toàn
+        id: matchedAttr?.id ?? 0,
         name: matchedAttr?.name ?? attrName
       }
     };
-
 
     this.attributes[attrIndex].values.push(newVal);
 
@@ -392,11 +386,12 @@ export class AddItemModalComponent {
     }
 
     this.attributes[attrIndex].selectedValues?.push(newVal);
-    this.attributes[attrIndex].newValue = '';
 
+    this.attributes[attrIndex].newValue = '';
     this.generateVariantsFromAttributes();
-    this.cd.detectChanges(); // ← nếu cần bắt Angular render ngay
+    this.cd.detectChanges();
   }
+
 
 
 
@@ -466,35 +461,87 @@ export class AddItemModalComponent {
     const width = span.offsetWidth + 20;
     this.inputWidths[index] = width;
   }
-
-  // Sinh tổ hợp các biến thể
+  // Trả về tổ hợp Cartesian của mảng mảng giá trị (combinations)
   generateVariantsFromAttributes() {
-    const selectedAttrValues = this.attributes.map(attr => attr.selectedValues || []);
-    if (selectedAttrValues.some(values => values.length === 0)) {
-      this.generatedVariants = [];
-      return;
-    }
+    const selectedAttrs = this.attributes.filter(attr => attr.selectedValues && attr.selectedValues.length > 0);
 
-    const combinations = this.cartesianProduct(selectedAttrValues);
-    this.generatedVariants = combinations.map((combo: AttributeValue[]) => {
+    // Lấy tất cả tổ hợp AttributeValue
+    const combinations = this.getCombinations(
+      selectedAttrs.map(attr => attr.selectedValues!)
+    );
+
+    this.generatedVariants = combinations.map((combination: AttributeValue[]) => {
+      const attributeValues: VariantAttributeValue[] = combination.map((value: AttributeValue) => ({
+        attributeValue: value
+      }));
+
       return {
+        price: 0,
+        capitalPrice: 0,
         stock: 0,
-        sku: '',
-        barcode: '',
-        costPrice: 0,
-        salePrice: 0,
-        attributeValues: combo.map(av => ({ attributeValue: av }))
+        attributeValues
       };
     });
   }
 
-  // Hàm sinh tổ hợp
-  cartesianProduct(arr: AttributeValue[][]): AttributeValue[][] {
-    return arr.reduce((a, b) =>
-      a.flatMap(d => b.map(e => [...d, e])),
-      [[]] as AttributeValue[][]
+  getCombinations(arrays: AttributeValue[][]): AttributeValue[][] {
+    if (arrays.length === 0) return [];
+
+    return arrays.reduce((acc, curr) => {
+      const result: AttributeValue[][] = [];
+      acc.forEach(a => {
+        curr.forEach(b => {
+          result.push([...a, b]);
+        });
+      });
+      return result;
+    }, [[]] as AttributeValue[][]);
+  }
+
+
+
+  cartesianProduct(arrays: AttributeValue[][]): AttributeValue[][] {
+    return arrays.reduce<AttributeValue[][]>(
+      (acc, curr) => acc.flatMap(a => curr.map(c => [...a, c])),
+      [[]]
     );
   }
+  onAttributeValuesChanged() {
+    this.generateVariantsFromAttributes();
+  }
+  // Sinh tổ hợp các biến thể
+  // generateVariantsFromAttributes() {
+  //   // Lọc ra các thuộc tính có selectedValues hợp lệ
+  //   const validAttributes = this.attributes.filter(attr => attr.selectedValues && attr.selectedValues.length > 0);
+
+  //   // Nếu không có thuộc tính hoặc không có giá trị được chọn → xoá bảng
+  //   if (validAttributes.length === 0) {
+  //     this.generatedVariants = [];
+  //     return;
+  //   }
+
+  //   const selectedAttrValues = validAttributes.map(attr => attr.selectedValues!);
+
+  //   const combinations = this.cartesianProduct(selectedAttrValues);
+
+  //   this.generatedVariants = combinations.map((combo: AttributeValue[]) => ({
+  //     stock: 0,
+  //     sku: '',
+  //     barcode: '',
+  //     costPrice: 0,
+  //     salePrice: 0,
+  //     attributeValues: combo.map(av => ({ attributeValue: av }))
+  //   }));
+  // }
+
+
+  // Hàm sinh tổ hợp
+  // cartesianProduct(arr: AttributeValue[][]): AttributeValue[][] {
+  //   return arr.reduce((a, b) =>
+  //     a.flatMap(d => b.map(e => [...d, e])),
+  //     [[]] as AttributeValue[][]
+  //   );
+  // }
   trackByVariant(index: number, variant: ProductVariant) {
     return variant.sku ?? index;
   }

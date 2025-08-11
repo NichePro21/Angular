@@ -6,36 +6,54 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemModalComponent } from './add-item-modal/add-item-modal.component';
 
 import Swal from 'sweetalert2';
-
+import { ProductResponseDTO } from 'src/app/modules/shared/response/ProductResponseDTO';
+import { HttpClient } from '@angular/common/http';
+import { UpdateItemModalComponent } from './update-item-modal/update-item-modal.component';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
+
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
+  expandedIndex: number = -1;  // Thêm dòng này để dùng trong template
   selectedProduct: Product | null = null;
-  constructor(private productService: ProductService, private modalService: NgbModal) { }
+  selectedVariantId: number | null = null;
+  selectedVariant?: Product;
+  constructor(private productService: ProductService, private modalService: NgbModal, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loadProducts();
   }
-
-  loadProducts(): void {
-    this.productService.getProducts().subscribe(
-      response => {
-        console.log('Response từ API:', response); // Kiểm tra cấu trúc dữ liệu
-        if (response && response.data) {
-          this.products = response.data;
-        } else {
-          console.error('Dữ liệu không tồn tại trong phản hồi API.');
-        }
-      },
-      error => {
-        console.error('Lỗi khi lấy dữ liệu sản phẩm:', error);
-      }
-    );
+  loadProducts() {
+    this.productService.getAllProductParentOnly().subscribe(data => {
+      this.products = data;
+    });
   }
+
+  onSelectVariant(variant: Product) {
+    if (this.selectedVariantId === variant.id) {
+      this.selectedVariantId = null; // click lại thì ẩn
+    } else {
+      this.selectedVariantId = variant.id;
+    }
+  }
+  // loadProducts(): void {
+  //   this.productService.getProducts().subscribe({
+  //     next: (response) => {
+  //       console.log('Response từ API:', response);
+  //       if (response && response.data) {
+  //         this.products = response.data;
+  //       } else {
+  //         console.error('Dữ liệu không tồn tại trong phản hồi API.');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Lỗi khi lấy dữ liệu sản phẩm:', err);
+  //     }
+  //   });
+  // }
   selectProduct(product: Product): void {
     this.selectedProduct = product;
   }
@@ -138,5 +156,30 @@ export class ProductsComponent implements OnInit {
 
   selectedStock: string = 'all';
 
+  //update item 
+  showUpdateModal: boolean = false;
+
+  openUpdateModal(product: any) {
+    const modalRef = this.modalService.open(UpdateItemModalComponent, {
+      size: 'xl',
+      backdrop: false,
+      keyboard: false,
+    });
+    modalRef.componentInstance.productId = product.id;
+  }
+
+  closeUpdateModal() {
+    this.showUpdateModal = false;
+    this.selectedProduct = null;
+  }
+
+  handleProductUpdated(updatedProduct: any) {
+    // Cập nhật danh sách sản phẩm sau khi sửa
+    const index = this.products.findIndex(p => p.id === updatedProduct.id);
+    if (index !== -1) {
+      this.products[index] = updatedProduct;
+    }
+    this.closeUpdateModal();
+  }
 
 }
