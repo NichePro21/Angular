@@ -1,5 +1,5 @@
 // products.component.ts
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, NgModule, OnInit } from '@angular/core';
 import { Product } from 'src/app/modules/shared/models/product';
 import { ProductService } from 'src/app/modules/shared/services/product.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,12 +9,12 @@ import Swal from 'sweetalert2';
 import { ProductResponseDTO } from 'src/app/modules/shared/response/ProductResponseDTO';
 import { HttpClient } from '@angular/common/http';
 import { UpdateItemModalComponent } from './update-item-modal/update-item-modal.component';
+import { MatTabsModule } from '@angular/material/tabs';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-
 export class ProductsComponent implements OnInit {
   products: Product[] = [];
   expandedIndex: number = -1;  // Thêm dòng này để dùng trong template

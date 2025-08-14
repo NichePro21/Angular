@@ -1,0 +1,99 @@
+<div class="card border-success shadow-sm">
+  <div class="card-header bg-success text-white">
+    <h5 class="mb-0">Thêm khách hàng mới</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="saveSupplier()" [formGroup]="SupplierForm" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="name">Tên khách hàng</label>
+          <input type="text" class="form-control" id="name" formControlName="name" [(ngModel)]="newSupplier.name"
+            placeholder="Nhập tên khách hàng" required>
+          <div *ngIf="submitted && f['name'].errors" class="invalid-feedback d-block">
+            <div *ngIf="f['name'].errors?.['required']">Tên là bắt buộc</div>
+            <div *ngIf="f['name'].errors?.['pattern']">Tên không được chứa ký tự đặc biệt hoặc số</div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="phone">Điện thoại</label>
+          <input type="text" class="form-control" id="phone" formControlName="phone" [(ngModel)]="newSupplier.phone"
+            placeholder="Nhập số điện thoại" required>
+          <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback d-block">
+            <div *ngIf="f['phone'].errors?.['required']">Điện thoại là bắt buộc</div>
+            <div *ngIf="f['phone'].errors?.['pattern']">Phải là 10 số, bắt đầu bằng 0 hoặc +84</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="address">Địa chỉ</label>
+          <input type="text" class="form-control" id="address" formControlName="address"
+            [(ngModel)]="newSupplier.address" placeholder="Nhập địa chỉ">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="city">Khu vực</label>
+          <input type="text" class="form-control" id="city" formControlName="region" [(ngModel)]="newSupplier.region"
+            placeholder="Nhập khu vực">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="ward">Phường xã</label>
+          <input type="text" class="form-control" id="ward" formControlName="ward" [(ngModel)]="newSupplier.ward"
+            placeholder="Nhập phường xã">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="taxCode">Mã số thuế</label>
+          <input type="text" class="form-control" id="taxCode" formControlName="taxCode"
+            [(ngModel)]="newSupplier.taxCode" placeholder="Nhập mã số thuế">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" formControlName="email" [(ngModel)]="newSupplier.email"
+            placeholder="example@gmail.com">
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback d-block">
+            <div *ngIf="f['email'].errors?.['required']">Email là bắt buộc</div>
+            <div *ngIf="f['email'].errors?.['pattern']">Email không hợp lệ</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="branch">Chi nhánh</label>
+          <input type="text" class="form-control" id="branch" formControlName="branch" name="branch"
+            [(ngModel)]="newSupplier.branch" placeholder="Nhập chi nhánh">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="group">Nhóm NCC</label>
+          <select class="form-control" id="group" formControlName="supplierGroup" [(ngModel)]="newSupplier.supplierGroup" name="supplierGroup"
+            required>
+            <option value="" disabled selected>Chọn nhóm nhà cung cấp</option>
+            <option value="Domestic">Trong nước</option>
+            <option value="International">Quốc tế</option>
+          </select>
+          <div *ngIf="submitted && f['group'].errors" class="invalid-feedback d-block">
+            <div *ngIf="f['group'].errors?.['required']">Vui lòng chọn nhóm nhà cung cấp</div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="notes">Ghi chú</label>
+          <textarea class="form-control" id="note" formControlName="note" [(ngModel)]="newSupplier.note"
+            placeholder="Nhập ghi chú"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group mt-3">
+        <button type="submit" class="btn btn-success mr-2"><i class="fas fa-address-card"></i> Lưu</button>
+        <button type="button" class="btn btn-secondary" (click)="close()"><i class="fas fa-ban"></i> Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>

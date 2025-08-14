@@ -10,9 +10,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ProfileComponent } from '../layouts/profile/profile.component';
 import { CustomerComponent } from '../layouts/customer/customer.component';
-import { PartnersComponent } from '../layouts/partners/partners.component';
 import { AccountComponent } from '../layouts/account/account.component';
 import { ProductsComponent } from '../layouts/products/products.component';
+import { SupplierComponent } from '../layouts/supplier/suppliers.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
       { path: 'customers', component: CustomerComponent },
-      { path: 'partners', component: PartnersComponent },
+      { path: 'suppliers', component: SupplierComponent },
       { path: 'account', component: AccountComponent },
       { path: 'products', component: ProductsComponent },
     ]

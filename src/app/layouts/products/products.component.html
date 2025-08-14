@@ -138,123 +138,141 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Tên sản phẩm</th>
-                  <th>SKU</th>
-                  <th>Giá</th>
-                  <th>Kho</th>
-                  <th>Chi tiết biến thể</th>
+                  <!-- <th>ID</th> -->
+                  <th>Mã hàng</th>
+                  <th>Tên hàng</th>
+                  <th>Giá Bán</th>
+                  <th>Giá Vốn</th>
+                  <th>Tồn Kho</th>
+                  <th>Thời gian tạo</th>
                 </tr>
               </thead>
               <tbody>
                 <ng-container *ngFor="let product of products; let i = index">
                   <!-- Dòng sản phẩm cha -->
                   <tr (click)="expandedIndex = expandedIndex === i ? -1 : i" style="cursor: pointer;">
-                    <td>{{ product.id }}</td>
+                    <!-- <td>SP0000{{ product.id }}</td> -->
+                    <td>SP00000{{ product.id }}</td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.sku }}</td>
-                    <td>{{ product.price | currency:'VND' }}</td>
+                    <td>{{ product.price | number:'1.0-0' }} vnđ</td>
+                    <td>{{ product.capitalPrice | number:'1.0-0' }} vnđ</td>
                     <td>{{ product.stock }}</td>
-                    <td>
-                      <button class="btn btn-sm btn-primary">
-                        {{ expandedIndex === i ? 'Ẩn' : 'Xem' }}
-                      </button>
-                    </td>
+                    <td>{{ product.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
                   </tr>
 
                   <!-- Dòng variants con -->
                   <tr *ngIf="expandedIndex === i">
-                    <td colspan="6" style="background-color: #f9f9f9;">
+                    <td colspan="8" style="background-color: #f9f9f9;">
                       <table class="table table-sm table-striped mb-0">
                         <thead>
                           <tr>
-                            <th>ID Variant</th>
-                            <th>Tên biến thể</th>
+                            <th>Mã Hàng</th>
+                            <th>Tên hàng</th>
                             <th>SKU</th>
-                            <th>Giá</th>
-                            <th>Kho</th>
+                            <th>Giá Bán</th>
+                            <th>Giá Vốn</th>
+                            <th>Tồn Kho</th>
+                            <th>Thời gian tạo</th>
                           </tr>
                         </thead>
                         <tbody>
                           <ng-container *ngFor="let variant of product.variants">
                             <tr (click)="onSelectVariant(variant)" style="cursor: pointer;">
-                              <td>{{ variant.id }}</td>
+                              <td>SP00000{{ variant.id }}</td>
                               <td>{{ variant.name }}</td>
                               <td>{{ variant.sku }}</td>
-                              <td>{{ variant.price | currency:'VND' }}</td>
+                              <td>{{ variant.price | number:'1.0-0' }} vnđ</td>
+                              <td>{{ variant.capitalPrice | number:'1.0-0' }} vnđ</td>
                               <td>{{ variant.stock }}</td>
+                              <td>{{ product.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
                             </tr>
 
                             <!-- Dòng hiển thị chi tiết ngay dưới biến thể được chọn -->
                             <tr *ngIf="selectedVariantId === variant.id">
-                              <td colspan="5" style="background-color: #eef6ff; padding: 1rem;">
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
-                                  <li class="nav-item">
-                                    <a class="nav-link active" id="tab-warehouse-{{variant.id}}" data-toggle="tab"
-                                      href="#warehouse-{{variant.id}}" role="tab"
-                                      aria-controls="warehouse-{{variant.id}}" aria-selected="true">Thẻ kho</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" id="tab-inventory-{{variant.id}}" data-toggle="tab"
-                                      href="#inventory-{{variant.id}}" role="tab"
-                                      aria-controls="inventory-{{variant.id}}" aria-selected="false">Tồn kho</a>
-                                  </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" id="tab-detail-{{variant.id}}" data-toggle="tab"
-                                      href="#detail-{{variant.id}}" role="tab" aria-controls="detail-{{variant.id}}"
-                                      aria-selected="false">Thông tin chi tiết</a>
-                                  </li>
-                                </ul>
+                              <td colspan="7" style="background-color: #eef6ff; padding: 1rem;">
+                                <mat-tab-group>
+                                  <mat-tab label="Thông Tin">
+                                    <div class="row g-3 align-items-start">
 
-                                <!-- Tab panes -->
-                                <div class="tab-content mt-3">
-                                  <div class="tab-pane fade show active" id="warehouse-{{variant.id}}" role="tabpanel"
-                                    aria-labelledby="tab-warehouse-{{variant.id}}">
+                                      <!-- Cột ảnh -->
+                                      <div class="col-md-4 text-center">
+                                        <img [src]="variant.imageUrl || 'https://semantic-ui.com/images/wireframe/image.png'" alt="Ảnh biến thể"
+                                          class="img-fluid rounded border"
+                                          style="max-height: 250px; object-fit: contain;">
+                                      </div>
+
+                                      <!-- Cột thông tin -->
+                                      <div class="col-md-8">
+                                        <table class="table table-bordered mb-0">
+                                          <tbody>
+                                            <tr>
+                                              <td>Mã hàng</td>
+                                              <td>SP00000{{ variant.id }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>SKU</td>
+                                              <td>{{ variant.sku }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Mã Vạch</td>
+                                              <td>{{ variant.barcode }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Nhóm Hàng</td>
+                                              <td>{{ variant.category.name }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Thương Hiệu</td>
+                                              <td>{{ variant.brand.name }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Định mức tồn</td>
+                                              <td>{{ variant.minStock }} > {{ variant.maxStock }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Tên</td>
+                                              <td>{{ variant.name }}</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Giá bán</td>
+                                              <td>{{ variant.price | number:'1.0-0' }} vnđ</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Giá vốn</td>
+                                              <td>{{ variant.capitalPrice | number:'1.0-0' }} vnđ</td>
+                                            </tr>
+                                            <tr>
+                                              <td>Ngày tạo</td>
+                                              <td>{{ variant.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+
+                                    </div>
+                                  </mat-tab>
+
+                                  <mat-tab label="Tồn kho">
                                     <table class="table table-bordered mb-0">
                                       <tbody>
                                         <tr>
-                                          <td>ID biến thể</td>
-                                          <td>{{ variant.id }}</td>
+                                          <td>Chi nhánh</td>
+                                          <td>Chi nhánh trung tâm</td>
                                         </tr>
                                         <tr>
-                                          <td>SKU</td>
-                                          <td>{{ variant.sku }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td>Tên</td>
-                                          <td>{{ variant.name }}</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                  <div class="tab-pane fade" id="inventory-{{variant.id}}" role="tabpanel"
-                                    aria-labelledby="tab-inventory-{{variant.id}}">
-                                    <table class="table table-bordered mb-0">
-                                      <tbody>
-                                        <tr>
-                                          <td>Tồn hiện tại</td>
+                                          <td>Tồn kho</td>
                                           <td>{{ variant.stock }}</td>
                                         </tr>
                                         <tr>
-                                          <td>Tồn tối đa</td>
-                                          <td>{{ variant.maxStock }}</td>
-                                        </tr>
-                                        <tr>
-                                          <td>Tồn tối thiểu</td>
+                                          <td>Trạng thái</td>
                                           <td>{{ variant.minStock }}</td>
                                         </tr>
                                       </tbody>
                                     </table>
-                                  </div>
-                                  <div class="tab-pane fade" id="detail-{{variant.id}}" role="tabpanel"
-                                    aria-labelledby="tab-detail-{{variant.id}}">
+                                  </mat-tab>
+                                  <mat-tab label="Thông tin chi tiết">
                                     <table class="table table-bordered mb-0">
                                       <tbody>
-                                        <tr>
-                                          <td>Giá</td>
-                                          <td>{{ variant.price | currency:'VND' }}</td>
-                                        </tr>
                                         <tr>
                                           <td>Mô tả</td>
                                           <td>{{ variant.description }}</td>
@@ -263,10 +281,14 @@
                                           <td>Ghi chú</td>
                                           <td>{{ variant.note }}</td>
                                         </tr>
+                                        <tr>
+                                          <td>Nhà Cung Cấp</td>
+                                          <td>Chưa làm chức năng này</td>
+                                        </tr>
                                       </tbody>
                                     </table>
-                                  </div>
-                                </div>
+                                  </mat-tab>
+                                </mat-tab-group>
                               </td>
                             </tr>
 

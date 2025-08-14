@@ -1,26 +1,26 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Partner } from 'src/app/modules/shared/models/partner';
-import { PartnerService } from 'src/app/modules/shared/services/partner.service';
+import { Suppliers } from 'src/app/modules/shared/models/suppliers';
+import { SuppliersService } from 'src/app/modules/shared/services/supplier.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-update-partner-modal',
-  templateUrl: './update-partner-modal.component.html',
-  styleUrls: ['./update-partner-modal.component.css']
+  selector: 'app-update-supplier-modal',
+  templateUrl: './update-supplier-modal.component.html',
+  styleUrls: ['./update-supplier-modal.component.css']
 })
-export class UpdatePartnerModalComponent {
-  @Input() partner!: Partner;
+export class UpdateSuppliersModalComponent {
+  @Input() Supplier!: Suppliers;
   submitted = false
-  partnerForm: FormGroup;
+  SupplierForm: FormGroup;
 
   constructor(
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
-    private partnerService: PartnerService
+    private SuppliersService: SuppliersService
   ) {
-    this.partnerForm = this.formBuilder.group({
+    this.SupplierForm = this.formBuilder.group({
       name: ['', [
         Validators.required,
         Validators.minLength(5),
@@ -48,26 +48,26 @@ export class UpdatePartnerModalComponent {
   }
 
   ngOnInit(): void {
-    if (this.partner) {
-      this.partnerForm.patchValue(this.partner);
+    if (this.Supplier) {
+      this.SupplierForm.patchValue(this.Supplier);
     }
   }
 
-  updatePartner(): void {
+  updateSupplier(): void {
     this.submitted = true;
-    if (this.partnerForm.invalid) {
+    if (this.SupplierForm.invalid) {
       this.showErrorMessage('Vui lòng nhập đầy đủ thông tin');
       return;
     }
 
-    const updatedpartner: Partner = {
-      ...this.partnerForm.value,
-      id: this.partner?.id
+    const updatedSuppliers: Suppliers = {
+      ...this.SupplierForm.value,
+      id: this.Supplier?.id
     };
 
-    this.partnerService.updatePartner(updatedpartner).subscribe(
+    this.SuppliersService.updateSuppliers(updatedSuppliers).subscribe(
       () => {
-        this.partnerService.setSelectedPartner(updatedpartner);
+        this.SuppliersService.setSelectedSuppliers(updatedSuppliers);
         this.showSuccessMessage('Cập nhật thành công');
         this.activeModal.close('Updated');
       },
@@ -86,5 +86,5 @@ export class UpdatePartnerModalComponent {
     this.activeModal.dismiss('closed');
   }
 
-  get f() { return this.partnerForm.controls; }
+  get f() { return this.SupplierForm.controls; }
 }

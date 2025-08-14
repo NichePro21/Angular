@@ -1,0 +1,188 @@
+<div class=" mt-4">
+  <!-- Card chính -->
+  <div class="card shadow-sm">
+    <!-- Header -->
+    <div class="card-header bg-light d-flex flex-wrap justify-content-between align-items-center">
+      <!-- Ô tìm kiếm -->
+      <div class="input-group input-group-sm w-auto mb-2 mb-md-0">
+        <input type="text" class="form-control" placeholder="Tên, Điện thoại..." [(ngModel)]="searchText">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Nhóm nút thao tác -->
+      <div class="btn-toolbar ml-auto">
+        <button type="button" class="btn btn-outline-success mr-2" (click)="openAddSupplierModal()">
+          + Thêm Đối Tác
+        </button>
+
+        <div class="btn-group mr-2">
+          <button type="button" class="btn btn-success">Tập Tin</button>
+          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <!-- <a class="dropdown-item" href="#">Nhập</a>
+            <a class="dropdown-item" href="#">Xuất</a> -->
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="displayMenu" data-toggle="dropdown">
+            Hiển thị
+          </button>
+          <!--
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="displayMenu">
+            <label class="dropdown-item">
+              <input type="checkbox" (change)="toggleDisplay('id')" [checked]="displayColumns['id']" /> ID
+            </label>
+            ...
+          </div>
+          -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body p-0">
+      <table class="table table-bordered table-hover mb-0">
+        <thead class="thead-light">
+          <tr>
+            <th></th>
+            <th *ngIf="displayColumns['id']">Mã nhà cung cấp</th>
+            <th *ngIf="displayColumns['name']">Tên Nhà Cung Cấp</th>
+            <th *ngIf="displayColumns['phone']">Điện thoại</th>
+            <th *ngIf="displayColumns['email']">Email</th>
+            <th *ngIf="displayColumns['currentDebt']">Nợ cần trả hiện tại</th>
+            <th *ngIf="displayColumns['totalPurchases']">Tổng mua</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let Supplier of Suppliers | filter:searchText">
+            <!-- Hàng chính -->
+            <tr (click)="toggleSupplier(Supplier)" [class.table-active]="selectedSupplier?.id === Supplier.id">
+              <td></td>
+              <td>NCC000{{ Supplier.id }}</td>
+              <td *ngIf="displayColumns['name']">{{ Supplier.name }}</td>
+              <td *ngIf="displayColumns['phone']">{{ Supplier.phone }}</td>
+              <td *ngIf="displayColumns['email']">{{ Supplier.email }}</td>
+              <td *ngIf="displayColumns['currentDebt']">{{ Supplier.currentDebt }}</td>
+              <td *ngIf="displayColumns['totalPurchases']">{{ Supplier.totalPurchases }}</td>
+            </tr>
+
+            <!-- Hàng chứa tabStrip -->
+            <tr *ngIf="selectedSupplier?.id === Supplier.id">
+              <td colspan="7" class="p-3 bg-light">
+                <mat-tab-group>
+                  <!-- Tab 1 -->
+                  <mat-tab label="Thông tin Đối Tác">
+                    <div class="row mt-3">
+                      <!-- Ảnh -->
+                      <div class="col-md-3 text-center">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/004/665/165/small_2x/supplier-red-concept-icon-cargo-transportation-idea-thin-line-illustration-parcel-shipping-delivery-service-management-product-transfer-logistics-and-distribution-isolated-outline-drawing-vector.jpg" class="img-fluid rounded mb-3" alt="Supplier Image">
+                      </div>
+                      <!-- Chi tiết -->
+                      <div class="col-md-9" *ngIf="selectedSupplier">
+                        <p><strong>Mã nhà cung cấp:</strong> NCC000{{ selectedSupplier.id }}</p>
+                        <p><strong>Tên khách:</strong> {{ selectedSupplier.name }}</p>
+                        <p><strong>Mã số thuế:</strong> {{ selectedSupplier.taxCode }}</p>
+                        <p><strong>Email:</strong> {{ selectedSupplier.email }}</p>
+                        <p><strong>Điện thoại:</strong> {{ selectedSupplier.phone }}</p>
+                        <p><strong>Địa chỉ:</strong> {{ selectedSupplier.address }}</p>
+                        <p><strong>Khu vực giao hàng:</strong> {{ selectedSupplier.region }}</p>
+                        <p><strong>Phường/xã:</strong> {{ selectedSupplier.ward }}</p>
+                        <p><strong>Người tạo:</strong> {{ selectedSupplier.createdBy }}</p>
+                        <p><strong>Ngày tạo:</strong> {{ selectedSupplier.createdDate }}</p>
+                        <p><strong>Ghi chú:</strong> {{ selectedSupplier.note }}</p>
+                        <p><strong>Nhà cung cấp:</strong>{{ selectedSupplier.supplierGroup }}</p>
+                      </div>
+                    </div>
+                    <!-- Nút hành động -->
+                    <div class="mt-3 d-flex justify-content-end">
+                      <button *ngIf="selectedSupplier" class="btn btn-warning mr-2"
+                        (click)="openUpdateSupplierModal(selectedSupplier.id)">
+                        Cập nhật
+                      </button>
+                      <button class="btn btn-secondary mr-2">
+                        Ngừng hoạt động
+                      </button>
+                      <button class="btn btn-danger" (click)="deleteSupplier()">
+                        Xóa
+                      </button>
+                    </div>
+                  </mat-tab>
+
+                  <!-- Tab 2 -->
+                  <mat-tab label="Lịch sử nhập/trả">
+                    <table class="table table-sm table-bordered mt-3">
+                      <thead>
+                        <tr>
+                          <th>Mã phiếu</th>
+                          <th>Thời gian</th>
+                          <th>Người tạo</th>
+                          <th>Tổng cộng</th>
+                          <th>Trạng thái</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let record of supplierHistory">
+                          <td>{{ record.code }}</td>
+                          <td>{{ record.date }}</td>
+                          <td>{{ record.createdBy }}</td>
+                          <td>{{ record.total | number }}</td>
+                          <td>{{ record.status }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </mat-tab>
+
+                  <!-- Tab 3 -->
+                  <mat-tab label="Nợ cần trả NCC">
+                    <table class="table table-sm table-bordered mt-3">
+                      <thead>
+                        <tr>
+                          <th>Mã phiếu</th>
+                          <th>Thời gian</th>
+                          <th>Loại</th>
+                          <th>Giá trị</th>
+                          <th>Nợ cần trả NCC</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let debt of supplierDebtList">
+                          <td>{{ debt.code }}</td>
+                          <td>{{ debt.date }}</td>
+                          <td>{{ debt.type }}</td>
+                          <td>{{ debt.value | number }}</td>
+                          <td>{{ debt.remainingDebt | number }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </mat-tab>
+                </mat-tab-group>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- Footer -->
+    <div class="card-footer d-flex justify-content-end">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item"><a class="page-link" href="#">«</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">»</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Thông tin chi tiết nhà cung cấp -->
+
+</div>

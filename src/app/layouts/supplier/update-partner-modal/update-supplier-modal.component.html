@@ -4,7 +4,7 @@
   </div>
   <!-- /.card-header -->
   <div class="card-body">
-    <form (ngSubmit)="updatePartner()" [formGroup]="partnerForm">
+    <form (ngSubmit)="updateSupplier()" [formGroup]="SupplierForm">
       <div class="row">
         <div class="col-sm-6">
           <!-- Tên khách hàng -->
@@ -12,7 +12,7 @@
             <label for="name">Tên khách hàng</label>
             <input type="text" class="form-control" id="name"
               formControlName="name"
-              [(ngModel)]="partner.name" required>
+              [(ngModel)]="Supplier.name" required>
             <div *ngIf="submitted && f['name'].errors"
               class="invalid-feedback d-block">
               <div *ngIf="f['name'].errors?.['required']">Name is
@@ -30,7 +30,7 @@
             <label for="phone">Điện thoại</label>
             <input type="text" class="form-control" id="phone"
               formControlName="phone"
-              [(ngModel)]="partner.phone" required>
+              [(ngModel)]="Supplier.phone" required>
             <div *ngIf="submitted && f['phone'].errors"
               class="invalid-feedback d-block">
               <div *ngIf="f['phone'].errors?.['required']">Điện thoại là bắt
@@ -48,7 +48,7 @@
             <label for="address">Địa chỉ</label>
             <input type="text" class="form-control" id="address"
               formControlName="address"
-              [(ngModel)]="partner.address">
+              [(ngModel)]="Supplier.address">
           </div>
         </div>
         <div class="col-sm-6">
@@ -57,7 +57,7 @@
             <label for="city">Khu vực</label>
             <input type="text" class="form-control" id="city"
               formControlName="city"
-              [(ngModel)]="partner.region">
+              [(ngModel)]="Supplier.region">
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
             <label for="ward">Phường xã</label>
             <input type="text" class="form-control" id="ward"
               formControlName="ward"
-              [(ngModel)]="partner.ward">
+              [(ngModel)]="Supplier.ward">
           </div>
         </div>
         <div class="col-sm-6">
@@ -81,7 +81,7 @@
             <label for="taxCode">Mã số thuế</label>
             <input type="text" class="form-control" id="taxCode"
               formControlName="taxCode"
-              [(ngModel)]="partner.taxCode">
+              [(ngModel)]="Supplier.taxCode">
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
             <label for="email">Email</label>
             <input type="email" class="form-control" id="email"
               formControlName="email"
-              [(ngModel)]="partner.email">
+              [(ngModel)]="Supplier.email">
             <div *ngIf="submitted && f['email'].errors"
               class="invalid-feedback d-block">
               <div *ngIf="f['email'].errors?.['required']">Email is
@@ -110,7 +110,7 @@
             <label for="group">Nhóm</label>
             <input type="text" class="form-control" id="group"
               formControlName="group"
-              [(ngModel)]="partner.supplierGroup">
+              [(ngModel)]="Supplier.supplierGroup">
           </div>
         </div>
         <div class="col-sm-6">
@@ -118,7 +118,7 @@
           <div class="form-group">
             <label for="notes">Ghi chú</label>
             <textarea class="form-control" id="notes" formControlName="notes"
-              [(ngModel)]="partner.note"></textarea>
+              [(ngModel)]="Supplier.note"></textarea>
           </div>
         </div>
       </div>

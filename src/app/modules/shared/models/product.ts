@@ -18,5 +18,5 @@ export interface Product {
   minStock: number;
   note?: string;
   variants: Product[];
-  // variants?: ProductVariant[]; 
+  createdAt: string;
 }

@@ -43,4 +43,30 @@ export class ProductService {
   updateProduct(productId: number, payload: ProductRequest): Observable<any> {
     return this.http.put(`${this.apiUrl}/${productId}`, payload);
   }
+  // create product
+  createProduct(
+    product: Product,
+    parentImage?: File,
+    variantImages?: { key: string, file: File }[]
+  ): Observable<Product> {
+    const formData = new FormData();
+
+    // 1. Chuyển product thành JSON string
+    formData.append('product', JSON.stringify(product));
+
+    // 2. Thêm ảnh parent
+    if (parentImage) {
+      formData.append('parentImage', parentImage);
+    }
+
+    // 3. Thêm ảnh biến thể và key
+    if (variantImages && variantImages.length > 0) {
+      variantImages.forEach(v => {
+        formData.append('variantImages', v.file);  // phải đúng tên field API
+        formData.append('variantKeys', v.key);
+      });
+    }
+
+    return this.http.post<Product>(this.apiUrl, formData);
+  }
 }
